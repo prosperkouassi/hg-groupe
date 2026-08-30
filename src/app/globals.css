@@ -2299,8 +2299,8 @@ body:has(.contact-page) {
 ========================================================= */
 
 .hero-accordion-tab {
-  color: white;
-  background: transparent;
+  color: black;
+  background: #ffffffa1;
 }
 
 .hero-accordion-tab::before {
