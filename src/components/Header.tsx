@@ -14,7 +14,9 @@ const navigation = [
 
 export default function Header() {
   const pathname = usePathname();
+
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isHome = pathname === "/";
 
@@ -32,24 +34,62 @@ export default function Header() {
     };
   }, []);
 
+  // Ferme automatiquement le menu lors d'un changement de page
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  // Bloque le scroll de la page quand le menu mobile est ouvert
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  // Fermeture avec la touche Échap
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  const mobileHeaderDark = isHome && !scrolled && !menuOpen;
+
   return (
     <header
       className={[
         "fixed inset-x-0 top-0 z-50 transition-all duration-500",
 
         isHome
-          ? scrolled
-            ? "border-b border-white/10 bg-[#050b16]/90 backdrop-blur-xl"
-            : "bg-transparent"
+          ? menuOpen
+            ? "border-b border-white/10 bg-[#050b16]"
+            : scrolled
+              ? "border-b border-white/10 bg-[#050b16]/90 backdrop-blur-xl"
+              : "bg-transparent"
           : "border-b border-[#081426]/10 bg-white",
       ].join(" ")}
     >
-      <div className="container-hopla flex h-20 items-center justify-between lg:h-24">
+      <div className="container-hopla relative z-50 flex h-20 items-center justify-between lg:h-24">
         {/* LOGO */}
         <Link
           href="/"
           className="z-50 flex items-center gap-3"
           aria-label="Retour à l'accueil"
+          onClick={() => setMenuOpen(false)}
         >
           <div className="h-10 w-10 flex-shrink-0 lg:h-11 lg:w-11">
             <img
@@ -136,25 +176,198 @@ export default function Header() {
         {/* MOBILE BUTTON */}
         <button
           type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 lg:hidden"
-          aria-label="Ouvrir le menu"
+          onClick={() => setMenuOpen((current) => !current)}
+          aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-navigation"
+          className={[
+            "relative z-50 flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 lg:hidden",
+
+            mobileHeaderDark
+              ? "border-white/10 bg-white/5"
+              : isHome
+                ? "border-white/10 bg-white/5"
+                : "border-[#081426]/10 bg-[#081426]/5",
+          ].join(" ")}
         >
-          <span className="flex w-5 flex-col gap-1.5">
+          <span className="relative block h-5 w-5">
             <span
               className={[
-                "h-px w-full",
+                "absolute left-0 top-[7px] h-px w-full transition-all duration-300",
                 isHome ? "bg-white" : "bg-[#081426]",
+                menuOpen ? "translate-y-[3px] rotate-45" : "",
               ].join(" ")}
             />
 
             <span
               className={[
-                "h-px w-full",
+                "absolute left-0 top-[13px] h-px w-full transition-all duration-300",
                 isHome ? "bg-white" : "bg-[#081426]",
+                menuOpen ? "-translate-y-[3px] -rotate-45" : "",
               ].join(" ")}
             />
           </span>
         </button>
+      </div>
+
+      {/* =====================================================
+          MOBILE MENU
+      ====================================================== */}
+      <div
+        id="mobile-navigation"
+        className={[
+          "fixed inset-x-0 bottom-0 top-20 z-40 overflow-y-auto transition-all duration-500 lg:hidden",
+
+          menuOpen
+            ? "pointer-events-auto translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-4 opacity-0",
+
+          isHome ? "bg-[#050b16]" : "bg-white",
+        ].join(" ")}
+      >
+        {/* DÉCOR */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+        >
+          <div
+            className="
+              absolute
+              left-[-35%]
+              top-[5%]
+              h-[380px]
+              w-[380px]
+              rounded-full
+              bg-[radial-gradient(circle,rgba(255,99,4,0.12)_0%,rgba(242,41,91,0.05)_42%,transparent_72%)]
+              blur-3xl
+            "
+          />
+
+          <div
+            className="
+              absolute
+              bottom-[-20%]
+              right-[-30%]
+              h-[380px]
+              w-[380px]
+              rounded-full
+              bg-[radial-gradient(circle,rgba(116,232,160,0.10)_0%,rgba(42,120,83,0.04)_42%,transparent_72%)]
+              blur-3xl
+            "
+          />
+        </div>
+
+        <div className="container-hopla relative z-10 flex min-h-full flex-col py-8">
+          {/* NAVIGATION */}
+          <nav className="flex flex-col">
+            {navigation.map((item, index) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMenuOpen(false)}
+                className={[
+                  "group flex items-center justify-between border-b py-5 transition-colors duration-300",
+
+                  isHome
+                    ? "border-white/10 text-white"
+                    : "border-[#081426]/10 text-[#081426]",
+                ].join(" ")}
+              >
+                <span
+                  className="
+                    text-[clamp(1.65rem,7vw,2.2rem)]
+                    font-semibold
+                    leading-none
+                    tracking-[-0.04em]
+                  "
+                >
+                  {item.label}
+                </span>
+
+                <span
+                  className={[
+                    "text-xs font-semibold tracking-[0.15em]",
+                    isHome ? "text-white/25" : "text-[#081426]/25",
+                  ].join(" ")}
+                >
+                  0{index + 1}
+                </span>
+              </Link>
+            ))}
+          </nav>
+
+          {/* PÔLES */}
+          <div className="mt-8 grid gap-3">
+            <a
+              href="https://alteractweb.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={[
+                "flex items-center justify-between rounded-full border px-5 py-4 text-sm font-semibold transition-all duration-300",
+
+                isHome
+                  ? "border-white/10 text-white/65"
+                  : "border-[#081426]/15 text-[#081426]",
+              ].join(" ")}
+            >
+              <span>AlteractWeb</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+
+            <a
+              href="https://strategaction.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={[
+                "flex items-center justify-between rounded-full border px-5 py-4 text-sm font-semibold transition-all duration-300",
+
+                isHome
+                  ? "border-white/10 text-white/65"
+                  : "border-[#081426]/15 text-[#081426]",
+              ].join(" ")}
+            >
+              <span>Stratège Action</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-4 pb-8">
+            <Link
+              href="/contact"
+              onClick={() => setMenuOpen(false)}
+              className="
+                group
+                relative
+                flex
+                w-full
+                items-center
+                justify-between
+                overflow-hidden
+                rounded-full
+                bg-gradient-to-r
+                from-[#FF7A58]
+                to-[#993578]
+                px-5
+                py-4
+                text-sm
+                font-semibold
+                text-white
+              "
+            >
+              <span className="relative z-10">
+                Nous contacter
+              </span>
+
+              <span
+                aria-hidden="true"
+                className="relative z-10 transition-transform duration-300 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </Link>
+          </div>
+        </div>
       </div>
     </header>
   );
