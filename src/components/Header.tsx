@@ -34,12 +34,10 @@ export default function Header() {
     };
   }, []);
 
-  // Ferme automatiquement le menu lors d'un changement de page
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
-  // Bloque le scroll de la page quand le menu mobile est ouvert
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
@@ -52,7 +50,6 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  // Fermeture avec la touche Échap
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -67,8 +64,6 @@ export default function Header() {
     };
   }, []);
 
-  const mobileHeaderDark = isHome && !scrolled && !menuOpen;
-
   return (
     <header
       className={[
@@ -80,7 +75,9 @@ export default function Header() {
             : scrolled
               ? "border-b border-white/10 bg-[#050b16]/90 backdrop-blur-xl"
               : "bg-transparent"
-          : "border-b border-[#081426]/10 bg-white",
+          : menuOpen
+            ? "border-b border-white/10 bg-[#050b16]"
+            : "border-b border-[#081426]/10 bg-white",
       ].join(" ")}
     >
       <div className="container-hopla relative z-50 flex h-20 items-center justify-between lg:h-24">
@@ -183,7 +180,7 @@ export default function Header() {
           className={[
             "relative z-50 flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 lg:hidden",
 
-            mobileHeaderDark
+            menuOpen
               ? "border-white/10 bg-white/5"
               : isHome
                 ? "border-white/10 bg-white/5"
@@ -194,7 +191,7 @@ export default function Header() {
             <span
               className={[
                 "absolute left-0 top-[7px] h-px w-full transition-all duration-300",
-                isHome ? "bg-white" : "bg-[#081426]",
+                menuOpen || isHome ? "bg-white" : "bg-[#081426]",
                 menuOpen ? "translate-y-[3px] rotate-45" : "",
               ].join(" ")}
             />
@@ -202,7 +199,7 @@ export default function Header() {
             <span
               className={[
                 "absolute left-0 top-[13px] h-px w-full transition-all duration-300",
-                isHome ? "bg-white" : "bg-[#081426]",
+                menuOpen || isHome ? "bg-white" : "bg-[#081426]",
                 menuOpen ? "-translate-y-[3px] -rotate-45" : "",
               ].join(" ")}
             />
@@ -216,13 +213,11 @@ export default function Header() {
       <div
         id="mobile-navigation"
         className={[
-          "fixed inset-x-0 bottom-0 top-20 z-40 overflow-y-auto transition-all duration-500 lg:hidden",
+          "fixed inset-x-0 bottom-0 top-20 z-40 overflow-y-auto bg-[#050b16] transition-all duration-500 lg:hidden",
 
           menuOpen
             ? "pointer-events-auto translate-y-0 opacity-100"
             : "pointer-events-none -translate-y-4 opacity-0",
-
-          isHome ? "bg-[#050b16]" : "bg-white",
         ].join(" ")}
       >
         {/* DÉCOR */}
@@ -265,13 +260,18 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={[
-                  "group flex items-center justify-between border-b py-5 transition-colors duration-300",
-
-                  isHome
-                    ? "border-white/10 text-white"
-                    : "border-[#081426]/10 text-[#081426]",
-                ].join(" ")}
+                className="
+                  group
+                  flex
+                  items-center
+                  justify-between
+                  border-b
+                  border-white/10
+                  py-5
+                  text-white
+                  transition-colors
+                  duration-300
+                "
               >
                 <span
                   className="
@@ -284,12 +284,7 @@ export default function Header() {
                   {item.label}
                 </span>
 
-                <span
-                  className={[
-                    "text-xs font-semibold tracking-[0.15em]",
-                    isHome ? "text-white/25" : "text-[#081426]/25",
-                  ].join(" ")}
-                >
+                <span className="text-xs font-semibold tracking-[0.15em] text-white/25">
                   0{index + 1}
                 </span>
               </Link>
@@ -302,13 +297,21 @@ export default function Header() {
               href="https://alteractweb.com"
               target="_blank"
               rel="noopener noreferrer"
-              className={[
-                "flex items-center justify-between rounded-full border px-5 py-4 text-sm font-semibold transition-all duration-300",
-
-                isHome
-                  ? "border-white/10 text-white/65"
-                  : "border-[#081426]/15 text-[#081426]",
-              ].join(" ")}
+              className="
+                flex
+                items-center
+                justify-between
+                rounded-full
+                border
+                border-white/10
+                px-5
+                py-4
+                text-sm
+                font-semibold
+                text-white/65
+                transition-all
+                duration-300
+              "
             >
               <span>AlteractWeb</span>
               <span aria-hidden="true">↗</span>
@@ -318,13 +321,21 @@ export default function Header() {
               href="https://strategaction.com"
               target="_blank"
               rel="noopener noreferrer"
-              className={[
-                "flex items-center justify-between rounded-full border px-5 py-4 text-sm font-semibold transition-all duration-300",
-
-                isHome
-                  ? "border-white/10 text-white/65"
-                  : "border-[#081426]/15 text-[#081426]",
-              ].join(" ")}
+              className="
+                flex
+                items-center
+                justify-between
+                rounded-full
+                border
+                border-white/10
+                px-5
+                py-4
+                text-sm
+                font-semibold
+                text-white/65
+                transition-all
+                duration-300
+              "
             >
               <span>Stratège Action</span>
               <span aria-hidden="true">↗</span>
