@@ -49,13 +49,17 @@ export async function POST(request: Request) {
 
     const domainId = Number(body.domainId);
 
-    const categoryIds = Array.isArray(
-      body.categoryIds
-    )
-      ? body.categoryIds
-          .map(Number)
-          .filter(Number.isInteger)
-      : [];
+    const categoryIds: number[] =
+  Array.isArray(body.categoryIds)
+    ? body.categoryIds
+        .map((value: unknown) =>
+          Number(value)
+        )
+        .filter(
+          (value: number) =>
+            Number.isInteger(value)
+     )
+    : [];
 
     const projectYear =
       body.projectYear === null ||
@@ -173,9 +177,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const uniqueCategoryIds = [
-      ...new Set(categoryIds),
-    ];
+    const uniqueCategoryIds: number[] = [
+  ...new Set<number>(
+    categoryIds
+  ),
+];
 
     if (uniqueCategoryIds.length > 0) {
       const placeholders = uniqueCategoryIds

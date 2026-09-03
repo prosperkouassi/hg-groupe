@@ -15,7 +15,7 @@ type CaseDomain = {
 
 type CaseCategory = {
   id: number;
-  domainId: number;
+  domain_id: number;
   name: string;
   slug: string;
 };
@@ -48,7 +48,7 @@ export default function CasesArchive({
 
     return categories.filter(
       (category) =>
-        category.domainId === activeDomainId
+        category.domain_id === activeDomainId
     );
   }, [categories, activeDomainId]);
 
