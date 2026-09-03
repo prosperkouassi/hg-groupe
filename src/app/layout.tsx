@@ -3,8 +3,7 @@ import { Manrope } from "next/font/google";
 
 import "./globals.css";
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import SiteChrome from "@/components/SiteChrome";
 
 const siteUrl = "https://hoplagroupe.com";
 
@@ -197,7 +196,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" data-scroll-behavior="smooth">
       <body className={manrope.variable}>
         {/* =====================================================
             DONNÉES STRUCTURÉES
@@ -208,7 +207,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(organizationSchema).replace(
               /</g,
-              "\\u003c",
+              "\\u003c"
             ),
           }}
         />
@@ -216,7 +215,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteSchema).replace(/</g, "\\u003c"),
+            __html: JSON.stringify(websiteSchema).replace(
+              /</g,
+              "\\u003c"
+            ),
           }}
         />
 
@@ -224,11 +226,9 @@ export default function RootLayout({
             SITE
         ====================================================== */}
 
-        <Header />
-
-        {children}
-
-        <Footer />
+        <SiteChrome>
+          {children}
+        </SiteChrome>
       </body>
     </html>
   );

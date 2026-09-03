@@ -1,14 +1,23 @@
 import type { Metadata } from "next";
 
+import CasesArchive from "@/components/cases/CasesArchive";
 import PageBreadcrumb from "@/components/PageBreadcrumb";
 import PageHero from "@/components/PageHero";
-import UnderConstruction from "@/components/UnderConstruction";
+
+import {
+  getCaseCategories,
+  getCaseDomains,
+} from "@/lib/cases";
+
+import {
+  getPublishedProjects,
+} from "@/lib/projects";
 
 export const metadata: Metadata = {
   title: "Cas d’études | Hopla Groupe",
 
   description:
-    "Découvrez prochainement les projets et cas d’études accompagnés par Hopla Groupe en digital, technologie, organisation, ressources humaines et gestion de projet.",
+    "Découvrez les réalisations de Hopla Groupe en solutions digitales, sites web, e-commerce, SaaS, digitalisation, organisation, ressources humaines et gestion de projet.",
 
   alternates: {
     canonical: "/cas-etudes",
@@ -16,10 +25,14 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Cas d’études | Hopla Groupe",
+
     description:
-      "Découvrez prochainement les projets et réalisations accompagnés par Hopla Groupe.",
+      "Découvrez une sélection de projets accompagnés par Hopla Groupe en digital, technologie, organisation et développement.",
+
     url: "/cas-etudes",
+
     type: "website",
+
     images: [
       {
         url: "/images/og-hopla-groupe.jpg",
@@ -32,14 +45,25 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
+
     title: "Cas d’études | Hopla Groupe",
+
     description:
-      "Découvrez prochainement les projets et réalisations accompagnés par Hopla Groupe.",
+      "Découvrez une sélection de projets accompagnés par Hopla Groupe.",
+
     images: ["/images/og-hopla-groupe.jpg"],
   },
 };
 
-export default function CasEtudesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function CasEtudesPage() {
+  const [domains, categories, projects] = await Promise.all([
+    getCaseDomains(),
+    getCaseCategories(),
+    getPublishedProjects(),
+  ]);
+
   return (
     <main className="cas-etudes-page">
       <PageHero title="Cas d’études" />
@@ -52,9 +76,10 @@ export default function CasEtudesPage() {
         ]}
       />
 
-      <UnderConstruction
-        title="Nos cas d’études arrivent."
-        text="Nous préparons actuellement une sélection de projets, de collaborations et de transformations accompagnés par Hopla Groupe."
+      <CasesArchive
+        domains={domains}
+        categories={categories}
+        projects={projects}
       />
     </main>
   );
