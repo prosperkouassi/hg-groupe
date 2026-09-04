@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import ExpertisesShowcase from "@/components/ExpertisesShowcase";
 import PageBreadcrumb from "@/components/PageBreadcrumb";
 import PageHero from "@/components/PageHero";
 
@@ -15,10 +16,14 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Expertises | Digital, Organisation, RH & Projets",
+
     description:
       "Découvrez les expertises de Hopla Groupe en Côte d’Ivoire : solutions digitales, organisation, ressources humaines et gestion de projet pour accompagner le développement des entreprises.",
+
     url: "/expertises",
+
     type: "website",
+
     images: [
       {
         url: "/images/og-hopla-groupe.jpg",
@@ -31,9 +36,12 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
+
     title: "Expertises | Digital, Organisation, RH & Projets",
+
     description:
       "Solutions digitales, organisation, ressources humaines et gestion de projet : découvrez les expertises de Hopla Groupe.",
+
     images: ["/images/og-hopla-groupe.jpg"],
   },
 };
@@ -50,6 +58,8 @@ export default function ExpertisesPage() {
           },
         ]}
       />
+
+      <ExpertisesShowcase />
     </main>
   );
 }

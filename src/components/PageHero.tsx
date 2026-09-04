@@ -4,10 +4,12 @@ import { useEffect, useRef } from "react";
 
 type PageHeroProps = {
   title: string;
+  compact?: boolean;
 };
 
 export default function PageHero({
   title,
+  compact = false,
 }: PageHeroProps) {
   const heroRef = useRef<HTMLElement | null>(null);
 
@@ -134,7 +136,13 @@ export default function PageHero({
       {/* TITLE */}
 
       <div className="container-hopla page-hero-content">
-        <h1 className="page-hero-title">
+        <h1
+          className={
+            compact
+              ? "page-hero-title !text-[clamp(2.8rem,6vw,5.6rem)]"
+              : "page-hero-title"
+          }
+        >
           {title}
         </h1>
       </div>
