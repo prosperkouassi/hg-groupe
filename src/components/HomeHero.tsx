@@ -197,6 +197,7 @@ const panels: HeroPanel[] = [
 
 const TAB_WIDTH = 88;
 const MOBILE_BREAKPOINT = 768;
+const INACTIVE_TAB_BACKGROUND = "#FFFFFF";
 
 function HeroVisualStage({ panel }: { panel: HeroPanel }) {
   return (
@@ -345,6 +346,10 @@ export default function HomeHero() {
 
   const visualRefs = useRef<Array<HTMLDivElement | null>>([]);
 
+  const mobileContentRef = useRef<HTMLDivElement | null>(null);
+
+  const touchStartXRef = useRef<number | null>(null);
+
   const activeIndexRef = useRef(0);
 
   const isAnimatingRef = useRef(false);
@@ -406,7 +411,7 @@ export default function HomeHero() {
           backgroundColor:
             index === activeIndexRef.current
               ? data.background
-              : data.tabBackground,
+              : INACTIVE_TAB_BACKGROUND,
         });
       });
 
@@ -456,8 +461,65 @@ export default function HomeHero() {
        */
 
       if (isMobile) {
-        activeIndexRef.current = nextIndex;
-        setActiveIndex(nextIndex);
+        if (
+          nextIndex === activeIndexRef.current ||
+          isAnimatingRef.current
+        ) {
+          return;
+        }
+
+        const previousIndex = activeIndexRef.current;
+        const mobileContent = mobileContentRef.current;
+
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        if (!mobileContent || reducedMotion) {
+          activeIndexRef.current = nextIndex;
+          setActiveIndex(nextIndex);
+
+          return;
+        }
+
+        const direction =
+          nextIndex > previousIndex ? 1 : -1;
+
+        isAnimatingRef.current = true;
+
+        gsap.to(mobileContent, {
+          autoAlpha: 0,
+          x: direction * -28,
+          filter: "blur(7px)",
+          duration: 0.22,
+          ease: "power2.in",
+          onComplete: () => {
+            activeIndexRef.current = nextIndex;
+            setActiveIndex(nextIndex);
+
+            requestAnimationFrame(() => {
+              gsap.fromTo(
+                mobileContent,
+                {
+                  autoAlpha: 0,
+                  x: direction * 34,
+                  filter: "blur(7px)",
+                },
+                {
+                  autoAlpha: 1,
+                  x: 0,
+                  filter: "blur(0px)",
+                  duration: 0.62,
+                  ease: "power3.out",
+                  clearProps: "filter",
+                  onComplete: () => {
+                    isAnimatingRef.current = false;
+                  },
+                },
+              );
+            });
+          },
+        });
 
         return;
       }
@@ -484,7 +546,6 @@ export default function HomeHero() {
         return;
       }
 
-      const previousData = panels[previousIndex];
       const nextData = panels[nextIndex];
 
       const reducedMotion = window.matchMedia(
@@ -498,14 +559,31 @@ export default function HomeHero() {
        */
 
       if (reducedMotion) {
+        /*
+         * Le panneau entrant reçoit son fond sombre AVANT
+         * son ouverture.
+         */
+        gsap.set(nextPanel, {
+          backgroundColor: nextData.background,
+        });
+
+        /*
+         * Le panneau sortant se referme en conservant
+         * son fond sombre.
+         */
         gsap.set(previousPanel, {
           width: TAB_WIDTH,
-          backgroundColor: previousData.tabBackground,
+        });
+
+        /*
+         * Il ne redevient blanc qu'une fois fermé.
+         */
+        gsap.set(previousPanel, {
+          backgroundColor: INACTIVE_TAB_BACKGROUND,
         });
 
         gsap.set(nextPanel, {
           width: `calc(100% - ${(panels.length - 1) * TAB_WIDTH}px)`,
-          backgroundColor: nextData.background,
         });
 
         if (previousContent) {
@@ -552,6 +630,20 @@ export default function HomeHero() {
 
       activeIndexRef.current = nextIndex;
       setActiveIndex(nextIndex);
+
+      /*
+       * IMPORTANT :
+       * Le panneau entrant est encore une languette blanche
+       * à cet instant.
+       *
+       * On lui applique immédiatement son fond sombre AVANT
+       * que sa largeur commence à augmenter.
+       *
+       * Il n'y a donc plus de surface blanche qui s'étend.
+       */
+      gsap.set(nextPanel, {
+        backgroundColor: nextData.background,
+      });
 
       const timeline = gsap.timeline({
         defaults: {
@@ -620,13 +712,19 @@ export default function HomeHero() {
 
       /*
        * 03 — RECONFIGURATION PHYSIQUE
+       *
+       * IMPORTANT :
+       * aucune couleur n'est animée ici.
+       *
+       * - le panneau entrant est déjà sombre ;
+       * - le panneau sortant reste sombre pendant
+       *   toute sa fermeture.
        */
 
       timeline.to(
         previousPanel,
         {
           width: TAB_WIDTH,
-          backgroundColor: previousData.tabBackground,
           duration: 1.05,
         },
         0.1,
@@ -636,14 +734,30 @@ export default function HomeHero() {
         nextPanel,
         {
           width: `calc(100% - ${(panels.length - 1) * TAB_WIDTH}px)`,
-          backgroundColor: nextData.background,
           duration: 1.05,
         },
         0.1,
       );
 
       /*
-       * 04 — HALO
+       * 04 — LE PANNEAU SORTANT DEVIENT BLANC
+       *
+       * Cette opération intervient seulement lorsque
+       * la fermeture est terminée :
+       *
+       * 0.1 + 1.05 = 1.15 s
+       */
+
+      timeline.set(
+        previousPanel,
+        {
+          backgroundColor: INACTIVE_TAB_BACKGROUND,
+        },
+        1.15,
+      );
+
+      /*
+       * 05 — HALO
        */
 
       const nextGlow = nextPanel.querySelector(
@@ -670,7 +784,7 @@ export default function HomeHero() {
       }
 
       /*
-       * 05 — VISUEL ENTRANT
+       * 06 — VISUEL ENTRANT
        */
 
       if (nextVisual) {
@@ -693,7 +807,7 @@ export default function HomeHero() {
       }
 
       /*
-       * 06 — CONTENU ENTRANT
+       * 07 — CONTENU ENTRANT
        */
 
       if (nextContent) {
@@ -765,6 +879,37 @@ export default function HomeHero() {
 
     changePanel(nextIndex);
   }, [changePanel]);
+
+  const handleTouchStart = (
+    event: React.TouchEvent<HTMLDivElement>,
+  ) => {
+    touchStartXRef.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (
+    event: React.TouchEvent<HTMLDivElement>,
+  ) => {
+    const startX = touchStartXRef.current;
+    const endX = event.changedTouches[0]?.clientX;
+
+    touchStartXRef.current = null;
+
+    if (startX === null || endX === undefined) {
+      return;
+    }
+
+    const distance = endX - startX;
+
+    if (Math.abs(distance) < 52) {
+      return;
+    }
+
+    if (distance < 0) {
+      goToNext();
+    } else {
+      goToPrevious();
+    }
+  };
 
   /*
    * =========================================================
@@ -929,20 +1074,8 @@ export default function HomeHero() {
                   aria-controls={`hero-mobile-panel-${panel.id}`}
                   onClick={() => changePanel(index)}
                   className={`
-                    relative
-                    flex-shrink-0
-                    px-4
-                    pb-4
-                    text-[9px]
-                    font-semibold
-                    uppercase
-                    tracking-[0.18em]
-                    transition-colors
-                    ${
-                      isActive
-                        ? "text-white"
-                        : "text-white/35"
-                    }
+                    hero-mobile-tab
+                    ${isActive ? "is-active" : ""}
                   `}
                 >
                   {panel.number}
@@ -970,12 +1103,17 @@ export default function HomeHero() {
           {/* CONTENU */}
 
           <div
+            ref={mobileContentRef}
             id={`hero-mobile-panel-${currentPanel.id}`}
             role="tabpanel"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             className="
+              hero-mobile-panel-content
               container-hopla
               flex
               flex-1
+              touch-pan-y
               items-center
               py-12
             "
@@ -1009,13 +1147,6 @@ export default function HomeHero() {
                   {currentPanel.eyebrow}
                 </p>
               </div>
-
-              {/*
-                Sur mobile, un seul panneau est présent dans le DOM.
-                Le titre actif reste donc toujours le H1 principal
-                de la page afin d'éviter sa disparition lors de la
-                navigation entre les univers.
-              */}
 
               <h1
                 id="home-hero-title"
@@ -1217,7 +1348,7 @@ export default function HomeHero() {
                   backgroundColor:
                     index === 0
                       ? panel.background
-                      : panel.tabBackground,
+                      : INACTIVE_TAB_BACKGROUND,
                 } as CSSProperties
               }
             >
@@ -1475,13 +1606,10 @@ export default function HomeHero() {
                     className="
                       relative
                       z-10
+                      hero-accordion-tab-number
                       text-[9px]
                       font-semibold
                       tracking-[0.2em]
-                      text-white/30
-                      transition-colors
-                      duration-300
-                      group-hover:text-white/70
                     "
                   >
                     {panel.number}
@@ -1499,6 +1627,7 @@ export default function HomeHero() {
 
                   <span
                     className="
+                      hero-accordion-tab-dot-shell
                       relative
                       z-10
                       flex
@@ -1508,10 +1637,6 @@ export default function HomeHero() {
                       justify-center
                       rounded-full
                       border
-                      border-white/10
-                      transition-all
-                      duration-300
-                      group-hover:border-white/25
                     "
                   >
                     <span

@@ -59,6 +59,7 @@ export default function ExpertisesShowcase() {
   return (
     <section className="bg-[#F6F3EE] text-[#081426]">
       {/* INTRODUCTION */}
+
       <div className="mx-auto max-w-[1440px] px-6 pb-28 pt-20 md:px-10 md:pb-36 md:pt-28 lg:px-14">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4">
@@ -68,7 +69,7 @@ export default function ExpertisesShowcase() {
           </div>
 
           <div className="lg:col-span-8">
-            <h2 className="max-w-[900px] text-[clamp(2.25rem,4.2vw,4.5rem)] font-semibold leading-[1] tracking-[-0.05em]">
+            <h2 className="font-display max-w-[900px] text-[clamp(2.25rem,4.2vw,4.5rem)] font-medium leading-[1] tracking-[-0.035em]">
               Deux expertises.
               <br />
               Une même ambition :
@@ -86,6 +87,7 @@ export default function ExpertisesShowcase() {
       </div>
 
       {/* SOLUTIONS DIGITALES */}
+
       <div className="border-t border-[#081426]/10">
         <div className="mx-auto max-w-[1440px] px-6 py-24 md:px-10 md:py-32 lg:px-14">
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-8">
@@ -95,7 +97,7 @@ export default function ExpertisesShowcase() {
                   01
                 </span>
 
-                <h2 className="mt-5 max-w-[360px] text-[clamp(2.35rem,3.3vw,3.8rem)] font-semibold leading-[1] tracking-[-0.05em]">
+                <h2 className="font-display mt-5 max-w-[360px] text-[clamp(2.35rem,3.3vw,3.8rem)] font-medium leading-[1] tracking-[-0.035em]">
                   Solutions
                   <br />
                   digitales
@@ -146,6 +148,7 @@ export default function ExpertisesShowcase() {
       </div>
 
       {/* ORGANISATION & DÉVELOPPEMENT */}
+
       <div className="bg-[#081426] text-white">
         <div className="mx-auto max-w-[1440px] px-6 py-24 md:px-10 md:py-32 lg:px-14">
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-8">
@@ -155,7 +158,7 @@ export default function ExpertisesShowcase() {
                   02
                 </span>
 
-                <h2 className="mt-5 max-w-[380px] text-[clamp(2.35rem,3.3vw,3.8rem)] font-semibold leading-[1] tracking-[-0.05em]">
+                <h2 className="font-display mt-5 max-w-[380px] text-[clamp(2.35rem,3.3vw,3.8rem)] font-medium leading-[1] tracking-[-0.035em]">
                   Organisation
                   <br />
                   & Développement
@@ -206,6 +209,7 @@ export default function ExpertisesShowcase() {
       </div>
 
       {/* MÉTHODE */}
+
       <div className="bg-[#F6F3EE]">
         <div className="mx-auto max-w-[1440px] px-6 py-24 md:px-10 md:py-32 lg:px-14">
           <div className="grid gap-10 lg:grid-cols-12">
@@ -216,7 +220,7 @@ export default function ExpertisesShowcase() {
             </div>
 
             <div className="lg:col-span-8">
-              <h2 className="max-w-[850px] text-[clamp(2.2rem,3.6vw,4rem)] font-semibold leading-[1] tracking-[-0.05em]">
+              <h2 className="font-display max-w-[850px] text-[clamp(2.2rem,3.6vw,4rem)] font-medium leading-[1] tracking-[-0.035em]">
                 Partir du besoin.
                 <br />
                 Construire la bonne réponse.
@@ -276,6 +280,7 @@ export default function ExpertisesShowcase() {
       </div>
 
       {/* CTA FINAL */}
+
       <div className="bg-[#050B16] text-white">
         <div className="mx-auto max-w-[1440px] px-6 py-24 md:px-10 md:py-32 lg:px-14">
           <div className="grid items-end gap-10 lg:grid-cols-12">
@@ -284,7 +289,7 @@ export default function ExpertisesShowcase() {
                 Votre projet
               </p>
 
-              <h2 className="mt-6 max-w-[850px] text-[clamp(2.7rem,5vw,5.4rem)] font-semibold leading-[0.94] tracking-[-0.055em]">
+              <h2 className="font-display mt-6 max-w-[850px] text-[clamp(2.7rem,5vw,5.4rem)] font-medium leading-[0.94] tracking-[-0.04em]">
                 Un projet
                 <br />
                 en tête ?

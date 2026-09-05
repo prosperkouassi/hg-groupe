@@ -88,6 +88,13 @@ a {
    TYPOGRAPHY
 ========================================================= */
 
+.font-display {
+  font-family:
+    var(--font-newsreader),
+    Georgia,
+    serif;
+}
+
 h1,
 h2,
 h3,
@@ -96,10 +103,35 @@ p {
   margin: 0;
 }
 
+/*
+   GRANDS TITRES ÉDITORIAUX
+   Newsreader
+*/
+
 h1,
-h2,
+h2 {
+  font-family:
+    var(--font-newsreader),
+    Georgia,
+    serif;
+
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+/*
+   TITRES FONCTIONNELS / SOUS-TITRES
+   Manrope
+*/
+
 h3,
 h4 {
+  font-family:
+    var(--font-manrope),
+    Arial,
+    Helvetica,
+    sans-serif;
+
   letter-spacing: -0.04em;
 }
 
@@ -210,8 +242,6 @@ p {
     transition-duration: 0.01ms !important;
   }
 }
-
-
 
 /* =========================================================
    STICKY STAGE
@@ -626,6 +656,11 @@ p {
 .pole-title {
   margin: 0;
 
+  font-family:
+    var(--font-newsreader),
+    Georgia,
+    serif;
+
   font-size:
     clamp(
       3.8rem,
@@ -633,12 +668,12 @@ p {
       8rem
     );
 
-  font-weight: 700;
+  font-weight: 500;
 
   line-height: 0.9;
 
   letter-spacing:
-    -0.06em;
+    -0.045em;
 }
 
 /* =========================================================
@@ -1510,6 +1545,11 @@ small {
 
   color: white;
 
+  font-family:
+    var(--font-newsreader),
+    Georgia,
+    serif;
+
   font-size:
     clamp(
       2.25rem,
@@ -1517,9 +1557,9 @@ small {
       3rem
     );
 
-  font-weight: 700;
+  font-weight: 500;
 
-  line-height: 1.08;
+  line-height: 1.02;
 
   letter-spacing: -0.035em;
 
@@ -2295,12 +2335,37 @@ body:has(.contact-page) {
 }
 
 /* =========================================================
-   HERO ACCORDION — LANGUETTES
+   HERO ACCORDION — LANGUETTES DESKTOP
 ========================================================= */
 
 .hero-accordion-tab {
-  color: black;
-  background: #ffffffa1;
+  color: #081426;
+
+  /*
+   * IMPORTANT :
+   * la couleur blanche appartient au panneau parent lorsqu'il est fermé.
+   * La languette elle-même reste transparente pour éviter qu'un grand
+   * aplat blanc recouvre le panneau pendant l'animation d'ouverture
+   * ou de fermeture.
+   */
+  background: transparent;
+
+  transition:
+    background-color 420ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    color 320ms ease,
+    box-shadow 420ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
 }
 
 .hero-accordion-tab::before {
@@ -2312,32 +2377,122 @@ body:has(.contact-page) {
   pointer-events: none;
 
   background:
-    linear-gradient(
-      180deg,
-      transparent 10%,
-      var(--hero-accent-soft) 100%
+    radial-gradient(
+      180px circle
+      at 50% 50%,
+      var(--hero-accent-soft),
+      transparent 72%
     );
 
   opacity: 0;
 
+  transform: scale(0.72);
+
   transition:
-    opacity 500ms
-    cubic-bezier(
-      0.16,
-      1,
-      0.3,
-      1
-    );
+    opacity 420ms ease,
+    transform 620ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
 }
 
-.hero-accordion-tab:hover::before {
+.hero-accordion-tab::after {
+  content: "";
+
+  position: absolute;
+
+  top: -18%;
+  bottom: -18%;
+  left: -180%;
+
+  width: 120%;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      110deg,
+      transparent 10%,
+      rgba(255, 255, 255, 0.04) 38%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.04) 62%,
+      transparent 90%
+    );
+
+  transform: skewX(-12deg);
+
+  opacity: 0;
+
+  transition:
+    left 780ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    opacity 180ms ease;
+}
+
+.hero-accordion-panel:has(.hero-accordion-tab:hover),
+.hero-accordion-panel:has(.hero-accordion-tab:focus-visible) {
+  background-color: transparent !important;
+}
+
+.hero-accordion-tab:hover,
+.hero-accordion-tab:focus-visible {
+  background: transparent !important;
+
+  color: #ffffff;
+
+  box-shadow:
+    inset 0 0 0 1px
+    rgba(255, 255, 255, 0.08);
+}
+
+.hero-accordion-tab:hover::before,
+.hero-accordion-tab:focus-visible::before {
   opacity: 1;
+
+  transform: scale(1);
+}
+
+.hero-accordion-tab:hover::after,
+.hero-accordion-tab:focus-visible::after {
+  left: 90%;
+
+  opacity: 1;
+}
+
+.hero-accordion-tab-number {
+  color:
+    rgba(
+      8,
+      20,
+      38,
+      0.5
+    );
+
+  transition:
+    color 320ms ease,
+    transform 420ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
 }
 
 .hero-accordion-tab-label {
   writing-mode: vertical-rl;
 
-  transform: rotate(180deg);
+  transform:
+    rotate(180deg)
+    translateY(0);
 
   white-space: nowrap;
 
@@ -2350,27 +2505,102 @@ body:has(.contact-page) {
   text-transform: uppercase;
 
   color:
-    rgba(255, 255, 255, 0.38);
+    rgba(
+      8,
+      20,
+      38,
+      0.78
+    );
 
   transition:
-    color 300ms ease,
+    color 320ms ease,
     transform 500ms
-    cubic-bezier(
-      0.16,
-      1,
-      0.3,
-      1
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.hero-accordion-tab-dot-shell {
+  border-color:
+    rgba(
+      8,
+      20,
+      38,
+      0.14
     );
+
+  background:
+    rgba(
+      8,
+      20,
+      38,
+      0.025
+    );
+
+  transition:
+    border-color 320ms ease,
+    background-color 320ms ease,
+    transform 500ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
 }
 
 .hero-accordion-tab:hover
-.hero-accordion-tab-label {
+.hero-accordion-tab-number,
+.hero-accordion-tab:focus-visible
+.hero-accordion-tab-number {
   color:
-    rgba(255, 255, 255, 0.78);
+    rgba(
+      255,
+      255,
+      255,
+      0.72
+    );
+
+  transform:
+    translateY(3px);
+}
+
+.hero-accordion-tab:hover
+.hero-accordion-tab-label,
+.hero-accordion-tab:focus-visible
+.hero-accordion-tab-label {
+  color: #ffffff;
 
   transform:
     rotate(180deg)
-    translateY(4px);
+    translateY(5px);
+}
+
+.hero-accordion-tab:hover
+.hero-accordion-tab-dot-shell,
+.hero-accordion-tab:focus-visible
+.hero-accordion-tab-dot-shell {
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.28
+    );
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.05
+    );
+
+  transform:
+    scale(1.08);
 }
 
 .hero-accordion-tab-dot {
@@ -2390,17 +2620,24 @@ body:has(.contact-page) {
 
   transition:
     transform 400ms
-    cubic-bezier(
-      0.16,
-      1,
-      0.3,
-      1
-    );
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    box-shadow 400ms ease;
 }
 
 .hero-accordion-tab:hover
+.hero-accordion-tab-dot,
+.hero-accordion-tab:focus-visible
 .hero-accordion-tab-dot {
-  transform: scale(1.5);
+  transform: scale(1.65);
+
+  box-shadow:
+    0 0 24px
+    var(--hero-accent);
 }
 
 /* =========================================================
@@ -2414,7 +2651,7 @@ body:has(.contact-page) {
   left: 0;
 
   width: 100%;
-  height: 2px;
+  height: 3px;
 
   background:
     linear-gradient(
@@ -2428,16 +2665,18 @@ body:has(.contact-page) {
   transform-origin: center;
 
   transition:
-    transform 500ms
-    cubic-bezier(
-      0.16,
-      1,
-      0.3,
-      1
-    );
+    transform 560ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
 }
 
 .hero-accordion-tab:hover
+.hero-accordion-tab-hover-line,
+.hero-accordion-tab:focus-visible
 .hero-accordion-tab-hover-line {
   transform: scaleX(1);
 }
@@ -2447,9 +2686,137 @@ body:has(.contact-page) {
 
   outline:
     2px solid
-    rgba(255, 255, 255, 0.75);
+    rgba(255, 255, 255, 0.82);
 
   outline-offset: -4px;
+}
+
+/* =========================================================
+   HERO ACCORDION — NAVIGATION MOBILE
+========================================================= */
+
+.hero-mobile-tab {
+  position: relative;
+
+  flex-shrink: 0;
+
+  min-width: 52px;
+
+  margin-right: 8px;
+
+  padding:
+    11px
+    14px
+    13px;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(
+      8,
+      20,
+      38,
+      0.08
+    );
+
+  border-radius: 999px;
+
+  background: #ffffff;
+
+  color: #081426;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+
+  text-align: center;
+  text-transform: uppercase;
+
+  transition:
+    color 320ms ease,
+    background-color 420ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    border-color 320ms ease,
+    transform 420ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.hero-mobile-tab::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      70px circle
+      at 50% 50%,
+      var(--hero-accent-soft),
+      transparent 75%
+    );
+
+  opacity: 0;
+
+  transform: scale(0.65);
+
+  transition:
+    opacity 380ms ease,
+    transform 500ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      );
+}
+
+.hero-mobile-tab.is-active {
+  border-color:
+    rgba(
+      255,
+      255,
+      255,
+      0.18
+    );
+
+  background: transparent;
+
+  color: #ffffff;
+
+  transform:
+    translateY(-2px);
+}
+
+.hero-mobile-tab.is-active::before {
+  opacity: 1;
+
+  transform: scale(1);
+}
+
+.hero-mobile-tab > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-mobile-panel-content {
+  will-change:
+    transform,
+    opacity,
+    filter;
 }
 
 /* =========================================================
@@ -3253,7 +3620,6 @@ body:has(.contact-page) {
     transition: none !important;
   }
 }
-
 
 /* =========================================================
    FOOTER

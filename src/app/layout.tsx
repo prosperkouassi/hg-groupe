@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import {
+  Manrope,
+  Newsreader,
+} from "next/font/google";
 
 import "./globals.css";
 
@@ -11,6 +14,13 @@ const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
   display: "swap",
+});
+
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-newsreader",
+  display: "swap",
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -79,7 +89,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
 
-    title: "Hopla Groupe | Digital, Organisation & Développement",
+    title: "Hopla Groupe | Digital, Organisation, RH & Projets",
 
     description:
       "Digital, organisation, ressources humaines et gestion de projet : deux expertises complémentaires pour accompagner le développement des entreprises.",
@@ -196,8 +206,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" data-scroll-behavior="smooth">
-      <body className={manrope.variable}>
+    <html
+      lang="fr"
+      data-scroll-behavior="smooth"
+    >
+      <body
+        className={`${manrope.variable} ${newsreader.variable}`}
+      >
         {/* =====================================================
             DONNÉES STRUCTURÉES
         ====================================================== */}
@@ -205,7 +220,9 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema).replace(
+            __html: JSON.stringify(
+              organizationSchema
+            ).replace(
               /</g,
               "\\u003c"
             ),
@@ -215,7 +232,9 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteSchema).replace(
+            __html: JSON.stringify(
+              websiteSchema
+            ).replace(
               /</g,
               "\\u003c"
             ),
