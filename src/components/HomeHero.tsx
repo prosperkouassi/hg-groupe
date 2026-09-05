@@ -628,18 +628,38 @@ export default function HomeHero() {
 
       isAnimatingRef.current = true;
 
+      /*
+       * On met à jour la référence immédiatement pour que
+       * les contrôles connaissent déjà le prochain panneau,
+       * mais on retarde la mise à jour React de activeIndex
+       * jusqu'à la fin de l'animation.
+       *
+       * Cela évite que la languette du panneau sortant
+       * soit recréée alors que ce panneau est encore large.
+       */
       activeIndexRef.current = nextIndex;
-      setActiveIndex(nextIndex);
 
       /*
-       * IMPORTANT :
-       * Le panneau entrant est encore une languette blanche
-       * à cet instant.
+       * La languette cliquée est encore présente dans le DOM
+       * tant que activeIndex n'a pas été mis à jour.
        *
-       * On lui applique immédiatement son fond sombre AVANT
-       * que sa largeur commence à augmenter.
-       *
-       * Il n'y a donc plus de surface blanche qui s'étend.
+       * On la masque immédiatement avant toute modification
+       * de largeur afin qu'aucun fond blanc ne puisse
+       * s'étendre avec le panneau entrant.
+       */
+      const nextTab =
+        nextPanel.querySelector<HTMLElement>(".hero-accordion-tab");
+
+      if (nextTab) {
+        gsap.set(nextTab, {
+          autoAlpha: 0,
+          pointerEvents: "none",
+        });
+      }
+
+      /*
+       * Le panneau entrant reçoit immédiatement son fond sombre
+       * AVANT que sa largeur commence à augmenter.
        */
       gsap.set(nextPanel, {
         backgroundColor: nextData.background,
@@ -651,6 +671,16 @@ export default function HomeHero() {
         },
 
         onComplete: () => {
+          /*
+           * Le changement React n'intervient qu'une fois
+           * les deux panneaux arrivés à leur largeur finale.
+           *
+           * À ce moment seulement :
+           * - le nouveau panneau devient officiellement actif ;
+           * - la languette blanche de l'ancien panneau apparaît,
+           *   alors qu'il mesure déjà 88 px.
+           */
+          setActiveIndex(nextIndex);
           isAnimatingRef.current = false;
         },
       });
