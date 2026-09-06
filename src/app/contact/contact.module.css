@@ -1,0 +1,1697 @@
+/* =========================================================
+   CONTACT — LANDING PAGE
+========================================================= */
+
+.contactIntro {
+  padding:
+    clamp(88px, 10vw, 150px)
+    0;
+
+  background: #ffffff;
+}
+
+.introGrid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.35fr)
+    minmax(280px, 0.65fr);
+
+  gap:
+    clamp(70px, 9vw, 150px);
+
+  align-items: start;
+}
+
+.introContent {
+  max-width: 760px;
+}
+
+.eyebrow,
+.asideLabel,
+.finalEyebrow,
+.formEyebrow,
+.expertLabel {
+  display: block;
+
+  color:
+    rgba(8, 20, 38, 0.5);
+
+  font-family:
+    var(--font-manrope),
+    Arial,
+    sans-serif;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.2em;
+
+  text-transform: uppercase;
+}
+
+.introTitle {
+  max-width: 760px;
+
+  margin-top: 22px;
+
+  color: #081426;
+
+  font-size:
+    clamp(
+      2.65rem,
+      4.8vw,
+      4.7rem
+    );
+
+  font-weight: 500;
+
+  line-height: 0.98;
+
+  letter-spacing: -0.045em;
+}
+
+.introText {
+  max-width: 650px;
+
+  margin-top: 24px;
+
+  color:
+    rgba(8, 20, 38, 0.66);
+
+  font-size:
+    clamp(
+      1rem,
+      1.2vw,
+      1.1rem
+    );
+
+  line-height: 1.75;
+}
+
+.introActions {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 14px;
+
+  margin-top: 40px;
+}
+
+.primaryButton,
+.secondaryButton,
+.finalButton {
+  display: inline-flex;
+
+  min-height: 52px;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 18px;
+
+  padding:
+    0 22px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+
+  font-weight: 650;
+
+  transition:
+    transform 300ms ease,
+    box-shadow 300ms ease,
+    background-color 300ms ease,
+    border-color 300ms ease;
+}
+
+.primaryButton {
+  background:
+    linear-gradient(
+      120deg,
+      #ff7a58,
+      #993578
+    );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 18px 50px
+    rgba(153, 53, 120, 0.15);
+}
+
+.primaryButton:hover {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 24px 60px
+    rgba(153, 53, 120, 0.24);
+}
+
+.secondaryButton {
+  border:
+    1px solid
+    rgba(8, 20, 38, 0.13);
+
+  color: #081426;
+
+  background: transparent;
+}
+
+.secondaryButton:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    rgba(8, 20, 38, 0.28);
+}
+
+.buttonArrow {
+  font-size: 16px;
+}
+
+.contactAside {
+  padding-top: 10px;
+}
+
+.asideLabel {
+  color:
+    rgba(8, 20, 38, 0.42);
+}
+
+.emailLink {
+  display: block;
+
+  width: fit-content;
+
+  margin-top: 24px;
+
+  color: #081426;
+
+  font-size:
+    clamp(
+      1.2rem,
+      1.8vw,
+      1.6rem
+    );
+
+  font-weight: 600;
+
+  letter-spacing:
+    -0.03em;
+
+  border-bottom:
+    1px solid
+    rgba(8, 20, 38, 0.18);
+
+  padding-bottom: 7px;
+}
+
+.asideText {
+  max-width: 370px;
+
+  margin-top: 24px;
+
+  color:
+    rgba(8, 20, 38, 0.56);
+
+  font-size: 0.95rem;
+
+  line-height: 1.75;
+}
+
+/* =========================================================
+   CONTACT — POLES
+========================================================= */
+
+.contactPoles {
+  padding:
+    clamp(90px, 10vw, 150px)
+    0;
+
+  background: #f6f3ee;
+
+  border-top:
+    1px solid
+    rgba(8, 20, 38, 0.07);
+}
+
+.polesHeader {
+  max-width: 760px;
+}
+
+.polesTitle {
+  margin-top: 22px;
+
+  color: #081426;
+
+  font-size:
+    clamp(
+      2.2rem,
+      4vw,
+      3.8rem
+    );
+
+  font-weight: 500;
+
+  line-height: 1;
+
+  letter-spacing: -0.04em;
+}
+
+.polesIntro {
+  max-width: 650px;
+
+  margin-top: 24px;
+
+  color:
+    rgba(8, 20, 38, 0.61);
+
+  line-height: 1.75;
+}
+
+.polesGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+
+  margin-top: 58px;
+}
+
+.poleCard {
+  position: relative;
+
+  display: grid;
+
+  min-height: 310px;
+
+  grid-template-columns:
+    auto 1fr auto;
+
+  gap: 28px;
+
+  align-items: start;
+
+  padding:
+    clamp(30px, 4vw, 48px);
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    rgba(8, 20, 38, 0.09);
+
+  background: #ffffff;
+
+  color: #081426;
+
+  transition:
+    transform 450ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    box-shadow 450ms ease;
+}
+
+.poleCard::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 4px;
+
+  transform: scaleX(0);
+
+  transform-origin: left;
+
+  transition:
+    transform 500ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+.poleCardStrategy::before {
+  background:
+    linear-gradient(
+      90deg,
+      #2a7853,
+      #74e8a0
+    );
+}
+
+.poleCardDigital::before {
+  background:
+    linear-gradient(
+      90deg,
+      #ff6304,
+      #f2295b
+    );
+}
+
+.poleCard:hover {
+  transform:
+    translateY(-7px);
+
+  box-shadow:
+    0 28px 70px
+    rgba(8, 20, 38, 0.09);
+}
+
+.poleCard:hover::before {
+  transform: scaleX(1);
+}
+
+.poleNumber {
+  color:
+    rgba(8, 20, 38, 0.34);
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+}
+
+.poleTitle {
+  max-width: 440px;
+
+  color: #081426;
+
+  font-family:
+    var(--font-newsreader),
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(
+      1.75rem,
+      2.8vw,
+      2.6rem
+    );
+
+  font-weight: 500;
+
+  line-height: 1.05;
+
+  letter-spacing: -0.04em;
+}
+
+.poleText {
+  max-width: 480px;
+
+  margin-top: 24px;
+
+  color:
+    rgba(8, 20, 38, 0.57);
+
+  font-size: 0.95rem;
+
+  line-height: 1.75;
+}
+
+.poleArrow {
+  font-size: 20px;
+
+  transition:
+    transform 350ms ease;
+}
+
+.poleCard:hover
+.poleArrow {
+  transform:
+    translate(
+      4px,
+      -4px
+    );
+}
+
+/* =========================================================
+   CONTACT — FINAL CTA
+========================================================= */
+
+.contactFinal {
+  position: relative;
+
+  overflow: hidden;
+
+  padding:
+    clamp(100px, 12vw, 170px)
+    0;
+
+  background: #050b16;
+
+  color: #ffffff;
+}
+
+.contactFinal::before {
+  content: "";
+
+  position: absolute;
+
+  width: 620px;
+
+  aspect-ratio: 1;
+
+  right: -180px;
+  top: -290px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 122, 88, 0.2),
+      rgba(153, 53, 120, 0.08) 45%,
+      transparent 70%
+    );
+
+  filter: blur(60px);
+}
+
+.finalInner {
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 760px;
+}
+
+.finalEyebrow {
+  color:
+    rgba(255, 255, 255, 0.4);
+}
+
+.finalTitle {
+  margin-top: 22px;
+
+  color: #ffffff;
+
+  font-size:
+    clamp(
+      2.35rem,
+      4.5vw,
+      4.3rem
+    );
+
+  font-weight: 500;
+
+  line-height: 1;
+
+  letter-spacing: -0.045em;
+}
+
+.finalText {
+  max-width: 620px;
+
+  margin-top: 24px;
+
+  color:
+    rgba(255, 255, 255, 0.6);
+
+  font-size: 1rem;
+
+  line-height: 1.75;
+}
+
+.finalButton {
+  margin-top: 38px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.15);
+
+  background:
+    rgba(255, 255, 255, 0.06);
+
+  color: #ffffff;
+}
+
+.finalButton:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    rgba(255, 255, 255, 0.1);
+}
+
+/* =========================================================
+   INTERACTIVE FORM — PAGE
+========================================================= */
+
+.formPage {
+  position: relative;
+
+  min-height: 100vh;
+
+  overflow: hidden;
+
+  isolation: isolate;
+
+  background: #050b16;
+
+  color: #ffffff;
+}
+
+.formBackgroundImage {
+  position: fixed;
+
+  z-index: 0;
+
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(5, 11, 22, 0.82),
+      rgba(5, 11, 22, 0.91)
+    ),
+    url("/images/contact-city.jpg");
+
+  background-size: cover;
+
+  background-position: center;
+
+  opacity: 0.52;
+
+  filter:
+    saturate(0.45)
+    contrast(0.9);
+
+  transform: scale(1.03);
+}
+
+.formGrid {
+  position: fixed;
+
+  z-index: 1;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.32;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    64px 64px;
+}
+
+.formHalo {
+  position: fixed;
+
+  z-index: 2;
+
+  border-radius: 50%;
+
+  filter: blur(90px);
+
+  pointer-events: none;
+}
+
+.formHaloDigital {
+  width: 600px;
+  height: 600px;
+
+  left: -180px;
+  top: -240px;
+
+  opacity: 0.28;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 99, 4, 0.8),
+      rgba(242, 41, 91, 0.2) 48%,
+      transparent 72%
+    );
+
+  animation:
+    contactHaloDigital
+    14s ease-in-out
+    infinite alternate;
+}
+
+.formHaloStrategy {
+  width: 620px;
+  height: 620px;
+
+  right: -220px;
+  top: -250px;
+
+  opacity: 0.21;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(116, 232, 160, 0.75),
+      rgba(42, 120, 83, 0.16) 50%,
+      transparent 72%
+    );
+
+  animation:
+    contactHaloStrategy
+    17s ease-in-out
+    infinite alternate;
+}
+
+.formOrbit {
+  position: fixed;
+
+  z-index: 3;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.05);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  mix-blend-mode: screen;
+}
+
+.formOrbitOne {
+  width:
+    clamp(
+      380px,
+      45vw,
+      690px
+    );
+
+  aspect-ratio: 1;
+
+  right: -8%;
+  top: 9%;
+
+  animation:
+    contactOrbit
+    58s linear
+    infinite;
+}
+
+.formOrbitTwo {
+  width:
+    clamp(
+      220px,
+      27vw,
+      410px
+    );
+
+  aspect-ratio: 1;
+
+  right: 7%;
+  top: 25%;
+
+  border-color:
+    rgba(255, 122, 88, 0.08);
+
+  animation:
+    contactOrbitReverse
+    44s linear
+    infinite;
+}
+
+.formShell {
+  position: relative;
+
+  z-index: 10;
+
+  width:
+    min(
+      calc(100% - 48px),
+      1160px
+    );
+
+  margin-inline: auto;
+
+  padding:
+    52px 0
+    90px;
+}
+
+.formTopbar {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 24px;
+}
+
+.formBackLink {
+  color:
+    rgba(255, 255, 255, 0.62);
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  transition:
+    color 250ms ease;
+}
+
+.formBackLink:hover {
+  color: #ffffff;
+}
+
+.formProgress {
+  color:
+    rgba(255, 255, 255, 0.48);
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.16em;
+}
+
+.progressTrack {
+  width: 100%;
+
+  height: 1px;
+
+  margin-top: 28px;
+
+  overflow: hidden;
+
+  background:
+    rgba(255, 255, 255, 0.1);
+}
+
+.progressValue {
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ff6304,
+      #ff7a58,
+      #993578,
+      #74e8a0
+    );
+
+  transition:
+    width 650ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    );
+}
+
+.formContent {
+  width: 100%;
+
+  max-width: 900px;
+
+  margin-top:
+    clamp(
+      70px,
+      10vh,
+      120px
+    );
+}
+
+.formStep {
+  animation:
+    formStepReveal
+    650ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    both;
+}
+
+.formEyebrow {
+  color:
+    rgba(255, 255, 255, 0.4);
+}
+
+.formTitle,
+.successTitle {
+  max-width: 800px;
+
+  margin-top: 22px;
+
+  color: #ffffff;
+
+  font-family:
+    var(--font-newsreader),
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(
+      2.4rem,
+      4.8vw,
+      4.7rem
+    );
+
+  font-weight: 500;
+
+  line-height: 0.98;
+
+  letter-spacing: -0.045em;
+}
+
+.formDescription,
+.successText {
+  max-width: 620px;
+
+  margin-top: 24px;
+
+  color:
+    rgba(255, 255, 255, 0.59);
+
+  font-size:
+    clamp(
+      0.98rem,
+      1.2vw,
+      1.08rem
+    );
+
+  line-height: 1.75;
+}
+
+.fieldGroup {
+  margin-top: 36px;
+}
+
+.fieldsGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap:
+    0 22px;
+}
+
+.fieldLabel {
+  display: block;
+
+  margin-bottom: 12px;
+
+  color:
+    rgba(255, 255, 255, 0.64);
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.fieldLabel span {
+  color:
+    rgba(255, 255, 255, 0.35);
+}
+
+.fieldInput {
+  width: 100%;
+
+  min-height: 57px;
+
+  padding:
+    0 0 13px;
+
+  border: 0;
+
+  border-bottom:
+    1px solid
+    rgba(255, 255, 255, 0.2);
+
+  outline: none;
+
+  border-radius: 0;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-size:
+    clamp(
+      1rem,
+      1.5vw,
+      1.2rem
+    );
+
+  transition:
+    border-color 250ms ease;
+}
+
+.fieldInput::placeholder {
+  color:
+    rgba(255, 255, 255, 0.24);
+}
+
+.fieldInput:focus {
+  border-color:
+    rgba(255, 255, 255, 0.7);
+}
+
+.fieldTextarea {
+  min-height: 150px;
+
+  padding-top: 12px;
+
+  resize: vertical;
+
+  line-height: 1.6;
+}
+
+.fieldError {
+  margin-top: 10px;
+
+  color: #ff9f89;
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.checkboxRow {
+  display: flex;
+
+  max-width: 620px;
+
+  gap: 14px;
+
+  align-items: flex-start;
+
+  margin-top: 26px;
+
+  color:
+    rgba(255, 255, 255, 0.48);
+
+  font-size: 12px;
+
+  line-height: 1.65;
+
+  cursor: pointer;
+}
+
+.checkboxRow input {
+  width: 16px;
+  height: 16px;
+
+  margin-top: 3px;
+
+  accent-color: #ff7a58;
+}
+
+.formNavigation {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 14px;
+
+  align-items: center;
+
+  margin-top: 46px;
+}
+
+.formNextButton,
+.formPreviousButton,
+.expertWhatsapp {
+  display: inline-flex;
+
+  min-height: 50px;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 16px;
+
+  padding:
+    0 22px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    transform 300ms ease,
+    background 300ms ease,
+    border-color 300ms ease;
+}
+
+.formNextButton {
+  border: 0;
+
+  background:
+    linear-gradient(
+      120deg,
+      #ff7a58,
+      #993578
+    );
+
+  color: #ffffff;
+}
+
+.formNextButton:hover {
+  transform:
+    translateY(-2px);
+}
+
+.formPreviousButton {
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.15);
+
+  background: transparent;
+
+  color:
+    rgba(255, 255, 255, 0.64);
+}
+
+.formPreviousButton:hover {
+  border-color:
+    rgba(255, 255, 255, 0.3);
+
+  color: #ffffff;
+}
+
+/* =========================================================
+   SERVICES
+========================================================= */
+
+.serviceGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-top: 42px;
+}
+
+.serviceCard {
+  position: relative;
+
+  display: flex;
+
+  min-height: 150px;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  padding: 26px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.12);
+
+  border-radius: 2px;
+
+  background:
+    rgba(5, 11, 22, 0.48);
+
+  color: #ffffff;
+
+  text-align: left;
+
+  backdrop-filter: blur(12px);
+
+  -webkit-backdrop-filter: blur(12px);
+
+  cursor: pointer;
+
+  transition:
+    transform 350ms
+      cubic-bezier(
+        0.16,
+        1,
+        0.3,
+        1
+      ),
+    border-color 300ms ease,
+    background 300ms ease;
+}
+
+.serviceCard:hover {
+  transform:
+    translateY(-4px);
+
+  border-color:
+    rgba(255, 255, 255, 0.25);
+
+  background:
+    rgba(255, 255, 255, 0.055);
+}
+
+.serviceCardSelected {
+  border-color:
+    rgba(255, 122, 88, 0.7);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 122, 88, 0.11),
+      rgba(153, 53, 120, 0.08)
+    );
+}
+
+.serviceCardWide {
+  grid-column:
+    1 / -1;
+}
+
+.serviceIndex {
+  color:
+    rgba(255, 255, 255, 0.34);
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.16em;
+}
+
+.serviceCard strong {
+  max-width: 430px;
+
+  margin-top: 26px;
+
+  font-family:
+    var(--font-newsreader),
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(
+      1.35rem,
+      2.3vw,
+      2rem
+    );
+
+  font-weight: 500;
+
+  line-height: 1.1;
+
+  letter-spacing: -0.035em;
+}
+
+.serviceCardArrow {
+  position: absolute;
+
+  right: 24px;
+  top: 24px;
+
+  color:
+    rgba(255, 255, 255, 0.55);
+}
+
+/* =========================================================
+   EXPERTS
+========================================================= */
+
+.expertArea {
+  margin-top: 26px;
+
+  animation:
+    formStepReveal
+    500ms
+    cubic-bezier(
+      0.16,
+      1,
+      0.3,
+      1
+    )
+    both;
+}
+
+.expertGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+.expertCard {
+  padding:
+    clamp(
+      26px,
+      4vw,
+      38px
+    );
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.1);
+
+  background:
+    rgba(5, 11, 22, 0.55);
+
+  backdrop-filter: blur(16px);
+
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.expertLabel {
+  color:
+    rgba(255, 255, 255, 0.35);
+}
+
+.expertTitle {
+  margin-top: 20px;
+
+  color: #ffffff;
+
+  font-size:
+    clamp(
+      1.5rem,
+      2.5vw,
+      2rem
+    );
+
+  font-weight: 500;
+
+  line-height: 1.08;
+}
+
+.expertText {
+  margin-top: 24px;
+
+  color:
+    rgba(255, 255, 255, 0.5);
+
+  font-size: 0.9rem;
+
+  line-height: 1.7;
+}
+
+.expertWhatsapp {
+  margin-top: 30px;
+
+  border:
+    1px solid
+    rgba(116, 232, 160, 0.35);
+
+  background:
+    rgba(116, 232, 160, 0.06);
+
+  color: #ffffff;
+}
+
+.expertWhatsapp:hover {
+  transform:
+    translateY(-2px);
+
+  border-color:
+    rgba(116, 232, 160, 0.65);
+
+  background:
+    rgba(116, 232, 160, 0.11);
+}
+
+/* =========================================================
+   FILE INPUT
+========================================================= */
+
+.fileInput {
+  display: block;
+
+  width: 100%;
+
+  padding: 18px;
+
+  border:
+    1px dashed
+    rgba(255, 255, 255, 0.18);
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  color:
+    rgba(255, 255, 255, 0.55);
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   SUCCESS
+========================================================= */
+
+.successPanel {
+  max-width: 820px;
+
+  padding-top:
+    clamp(
+      100px,
+      17vh,
+      180px
+    );
+}
+
+.successActions {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 14px;
+
+  margin-top: 40px;
+}
+
+/* =========================================================
+   FORM ANIMATIONS
+========================================================= */
+
+@keyframes formStepReveal {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(20px);
+
+    filter: blur(5px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+
+    filter: blur(0);
+  }
+}
+
+@keyframes contactHaloDigital {
+  from {
+    transform:
+      translate(
+        -20px,
+        -10px
+      );
+  }
+
+  to {
+    transform:
+      translate(
+        36px,
+        22px
+      );
+  }
+}
+
+@keyframes contactHaloStrategy {
+  from {
+    transform:
+      translate(
+        20px,
+        12px
+      );
+  }
+
+  to {
+    transform:
+      translate(
+        -32px,
+        -18px
+      );
+  }
+}
+
+@keyframes contactOrbit {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+@keyframes contactOrbitReverse {
+  to {
+    transform:
+      rotate(-360deg);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media
+  (min-width: 768px)
+  and
+  (max-width: 1023px) {
+
+  .introGrid {
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(240px, 0.55fr);
+
+    gap: 55px;
+  }
+
+  .polesGrid {
+    gap: 14px;
+  }
+
+  .poleCard {
+    min-height: 290px;
+
+    grid-template-columns:
+      1fr;
+
+    gap: 20px;
+  }
+
+  .poleArrow {
+    position: absolute;
+
+    right: 28px;
+    top: 28px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+  .contactIntro,
+  .contactPoles {
+    padding:
+      78px 0;
+  }
+
+  .introGrid {
+    grid-template-columns: 1fr;
+
+    gap: 60px;
+  }
+
+  .introTitle {
+    font-size:
+      clamp(
+        2.45rem,
+        11vw,
+        3.5rem
+      );
+  }
+
+  .introActions {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .contactAside {
+    padding-top: 0;
+  }
+
+  .polesTitle {
+    font-size:
+      clamp(
+        2.2rem,
+        10vw,
+        3rem
+      );
+  }
+
+  .polesGrid {
+    grid-template-columns: 1fr;
+
+    margin-top: 42px;
+  }
+
+  .poleCard {
+    min-height: 260px;
+
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+  }
+
+  .poleArrow {
+    position: absolute;
+
+    right: 25px;
+    top: 25px;
+  }
+
+  .contactFinal {
+    padding:
+      90px 0;
+  }
+
+  .finalTitle {
+    font-size:
+      clamp(
+        2.3rem,
+        10.5vw,
+        3.35rem
+      );
+  }
+
+  .formShell {
+    width:
+      calc(100% - 36px);
+
+    padding-top: 30px;
+  }
+
+  .formContent {
+    margin-top: 65px;
+  }
+
+  .formTitle,
+  .successTitle {
+    font-size:
+      clamp(
+        2.35rem,
+        11vw,
+        3.55rem
+      );
+  }
+
+  .fieldsGrid,
+  .serviceGrid,
+  .expertGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .serviceCardWide {
+    grid-column: auto;
+  }
+
+  .serviceCard {
+    min-height: 135px;
+  }
+
+  .formNavigation {
+    align-items: stretch;
+
+    flex-direction: column-reverse;
+  }
+
+  .formNextButton,
+  .formPreviousButton {
+    width: 100%;
+  }
+
+  .formBackgroundImage {
+    background-position: 58% center;
+
+    opacity: 0.42;
+  }
+
+  .formOrbitOne {
+    right: -70%;
+  }
+
+  .formOrbitTwo {
+    right: -35%;
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible,
+.finalButton:focus-visible,
+.formNextButton:focus-visible,
+.formPreviousButton:focus-visible,
+.serviceCard:focus-visible,
+.expertWhatsapp:focus-visible,
+.formBackLink:focus-visible {
+  outline:
+    2px solid
+    rgba(255, 255, 255, 0.85);
+
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .formHalo,
+  .formOrbit {
+    animation: none !important;
+  }
+
+  .formStep,
+  .expertArea {
+    animation: none !important;
+  }
+
+  .progressValue,
+  .serviceCard,
+  .primaryButton,
+  .secondaryButton,
+  .finalButton {
+    transition: none !important;
+  }
+}

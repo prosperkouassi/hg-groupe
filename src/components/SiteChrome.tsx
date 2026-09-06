@@ -18,7 +18,15 @@ export default function SiteChrome({
     pathname === "/admin" ||
     pathname.startsWith("/admin/");
 
-  if (isAdminRoute) {
+  const isContactRequestRoute =
+    pathname === "/contact/demande" ||
+    pathname.startsWith("/contact/demande/");
+
+  const hideSiteChrome =
+    isAdminRoute ||
+    isContactRequestRoute;
+
+  if (hideSiteChrome) {
     return <>{children}</>;
   }
 
