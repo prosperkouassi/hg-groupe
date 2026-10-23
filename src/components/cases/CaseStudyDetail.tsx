@@ -140,8 +140,9 @@ function ContentSection({
   );
 }
 
+
 /* =========================================================
-   IMAGE DE COUVERTURE AVEC PARALLAX
+   IMAGE DE COUVERTURE RESPONSIVE
 ========================================================= */
 
 function ProjectCover({
@@ -151,110 +152,19 @@ function ProjectCover({
   image: string;
   alt: string;
 }) {
-  const containerRef =
-    useRef<HTMLDivElement | null>(null);
-
-  const imageRef =
-    useRef<HTMLImageElement | null>(null);
-
-  useEffect(() => {
-    let frameId: number | null = null;
-
-    function updateParallax() {
-      if (
-        !containerRef.current ||
-        !imageRef.current
-      ) {
-        return;
-      }
-
-      const rect =
-        containerRef.current.getBoundingClientRect();
-
-      const viewportHeight =
-        window.innerHeight;
-
-      const centerOffset =
-        rect.top +
-        rect.height / 2 -
-        viewportHeight / 2;
-
-      const movement = Math.max(
-        -32,
-        Math.min(
-          32,
-          centerOffset * -0.035
-        )
-      );
-
-      imageRef.current.style.transform =
-        `scale(1.055) translate3d(0, ${movement}px, 0)`;
-    }
-
-    function onScroll() {
-      if (frameId !== null) {
-        return;
-      }
-
-      frameId =
-        window.requestAnimationFrame(
-          () => {
-            updateParallax();
-            frameId = null;
-          }
-        );
-    }
-
-    updateParallax();
-
-    window.addEventListener(
-      "scroll",
-      onScroll,
-      {
-        passive: true,
-      }
-    );
-
-    window.addEventListener(
-      "resize",
-      onScroll
-    );
-
-    return () => {
-      window.removeEventListener(
-        "scroll",
-        onScroll
-      );
-
-      window.removeEventListener(
-        "resize",
-        onScroll
-      );
-
-      if (frameId !== null) {
-        window.cancelAnimationFrame(
-          frameId
-        );
-      }
-    };
-  }, []);
-
   return (
-    <div
-      ref={containerRef}
-      className="mx-auto mt-4 max-w-[1600px] overflow-hidden px-0 md:px-8"
-    >
-      <div className="aspect-[16/9] overflow-hidden bg-[#EAE7E1] md:rounded-[2px]">
+    <div className="mx-auto mt-4 w-full max-w-[1440px] px-5 md:px-8 lg:px-12">
+      <div className="h-[220px] w-full overflow-hidden rounded-[2px] bg-[#EAE7E1] md:h-[350px] lg:h-[480px]">
         <img
-          ref={imageRef}
           src={image}
           alt={alt}
-          className="h-full w-full scale-[1.055] object-cover will-change-transform"
+          className="block h-full w-full object-cover object-center"
         />
       </div>
     </div>
   );
 }
+
 
 /* =========================================================
    GALERIE / CARROUSEL
