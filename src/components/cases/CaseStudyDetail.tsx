@@ -666,81 +666,69 @@ export default function CaseStudyDetail({
         }
       />
 
-      {/* CTA PROJET */}
+      {/* CTA FINAL — BANNIÈRE ANIMÉE */}
 
-      {project.externalUrl && (
-        <section className="bg-[#081426] py-20 text-white md:py-28">
-          <div className="mx-auto max-w-[1440px] px-5 md:px-8 lg:px-12">
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-2xl">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
-                  Découvrir le projet
-                </p>
+      <section
+        aria-labelledby="case-study-cta-title"
+        className="relative isolate overflow-hidden bg-[#061326] text-white"
+      >
+        {/* Lumières décoratives */}
+        <div
+          aria-hidden="true"
+          className="case-cta-glow pointer-events-none absolute -right-20 -top-32 h-[420px] w-[420px] rounded-full bg-[#D45C86]/10 blur-[100px]"
+        />
+        <div
+          aria-hidden="true"
+          className="case-cta-curve pointer-events-none absolute -bottom-[360px] -right-[280px] h-[540px] w-[800px] rounded-[50%] bg-gradient-to-br from-[#FF796C] via-[#C44C77] to-[#452B52] opacity-90"
+        />
+        <div
+          aria-hidden="true"
+          className="case-cta-halo pointer-events-none absolute -bottom-40 right-20 h-[280px] w-[280px] rounded-full bg-[#FF796C]/15 blur-[90px]"
+        />
 
-                <h2 className="mt-6 text-3xl font-semibold tracking-[-0.045em] text-white md:text-5xl">
-                  Voir le projet en ligne
-                </h2>
-              </div>
+        <div className="relative z-10 mx-auto flex min-h-[380px] w-full max-w-[1440px] flex-col justify-center px-5 py-14 md:h-[380px] md:min-h-0 md:px-8 md:py-8 lg:px-12">
+          <h2
+            id="case-study-cta-title"
+            className="case-cta-title max-w-[1100px] font-serif text-[clamp(2.8rem,6vw,6rem)] font-normal leading-[1.05] tracking-[-0.05em]"
+          >
+            <span className="text-white">Un projet{" "}</span>
+            <span className="bg-gradient-to-r from-[#FF9075] via-[#FF6F70] to-[#E44C80] bg-clip-text text-transparent">
+              en tête ?
+            </span>
+          </h2>
 
-              <a
-                href={
-                  project.externalUrl
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center self-start rounded-full border border-white/20 px-6 text-sm font-semibold text-white transition-colors duration-300 hover:bg-white hover:text-[#081426] lg:self-auto"
-              >
-                Visiter le site
-
-                <span
-                  aria-hidden="true"
-                  className="ml-3"
-                >
-                  ↗
-                </span>
-              </a>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* CTA CONTACT */}
-
-      <section className="bg-[#081426] text-white">
-        <div className="mx-auto max-w-[1440px] px-5 py-20 md:px-8 md:py-24 lg:px-12 lg:py-28">
-          <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div className="max-w-[760px]">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-                Votre projet
-              </p>
-
-              <h2 className="mt-6 text-[clamp(2.25rem,4vw,4.5rem)] font-semibold leading-[1.02] tracking-[-0.05em] text-white">
-                Un projet en tête ?
-              </h2>
-
-              <p className="mt-6 max-w-[620px] text-[16px] leading-7 text-white/60 md:text-[17px]">
-                Parlons de vos ambitions
-                et voyons comment les
-                transformer en solutions
-                concrètes.
-              </p>
-            </div>
-
+          <div className="case-cta-actions mt-10 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
-              href="/contact"
-              className="group inline-flex min-h-12 items-center justify-center self-start rounded-full border border-white/20 px-6 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-[#081426] lg:self-end"
+              href="/contact/demande"
+              className="group inline-flex min-h-[54px] items-center justify-center gap-6 rounded-full bg-gradient-to-r from-[#FF806B] to-[#B53C78] px-8 py-3 text-[15px] font-semibold text-white shadow-[0_12px_35px_rgba(219,83,111,0.18)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(219,83,111,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
               Parlons de votre projet
-
-              <span
-                aria-hidden="true"
-                className="ml-4 transition-transform duration-300 group-hover:translate-x-1"
-              >
-                →
-              </span>
+              <span aria-hidden="true" className="text-xl transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
+
+            {project.externalUrl ? (
+              <a
+                href={project.externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex min-h-[54px] items-center justify-center gap-6 rounded-full border border-white/80 px-8 py-3 text-[15px] font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:border-white hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              >
+                Visiter le site
+                <span aria-hidden="true" className="text-xl transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1">↗</span>
+              </a>
+            ) : (
+              <Link
+                href="/cas-etudes"
+                className="group inline-flex min-h-[54px] items-center justify-center gap-6 rounded-full border border-white/80 px-8 py-3 text-[15px] font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:border-white hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              >
+                Nos réalisations
+                <span aria-hidden="true" className="text-xl transition-transform duration-300 group-hover:translate-x-1">↗</span>
+              </Link>
+            )}
           </div>
         </div>
+
+
       </section>
 
       {/* NAVIGATION ENTRE PROJETS */}
@@ -803,6 +791,46 @@ export default function CaseStudyDetail({
       </section>
 
       <style jsx global>{`
+          .case-cta-curve {
+            animation: ctaCurveFloat 14s ease-in-out infinite alternate;
+            transform-origin: center;
+          }
+          .case-cta-glow {
+            animation: ctaGlowPulse 9s ease-in-out infinite alternate;
+          }
+          .case-cta-halo {
+            animation: ctaHaloFloat 11s ease-in-out infinite alternate;
+          }
+          .case-cta-title {
+            animation: ctaFadeUp 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          }
+          .case-cta-actions {
+            animation: ctaFadeUp 1000ms 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+          }
+          @keyframes ctaCurveFloat {
+            from { transform: translate3d(0, 0, 0) rotate(-24deg) scale(1); }
+            to { transform: translate3d(-35px, -18px, 0) rotate(-21deg) scale(1.04); }
+          }
+          @keyframes ctaGlowPulse {
+            from { opacity: 0.4; transform: scale(0.9); }
+            to { opacity: 0.9; transform: scale(1.15); }
+          }
+          @keyframes ctaHaloFloat {
+            from { transform: translate3d(0, 0, 0); opacity: 0.35; }
+            to { transform: translate3d(-25px, -20px, 0); opacity: 0.75; }
+          }
+          @keyframes ctaFadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @media (max-width: 767px) {
+            .case-cta-curve { right: -420px; bottom: -390px; }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .case-cta-curve, .case-cta-glow, .case-cta-halo,
+            .case-cta-title, .case-cta-actions { animation: none !important; }
+          }
+
         @keyframes heroReveal {
           from {
             opacity: 0;
