@@ -508,12 +508,22 @@ export default function CaseStudyDetail({
               </div>
             </div>
 
-            <h1 className="mt-8 max-w-[1050px] animate-[heroReveal_.85s_.08s_ease-out_both] text-[clamp(2.75rem,5vw,5rem)] font-semibold leading-[1] tracking-[-0.055em] text-[#081426]">
+            <h1
+              className="mt-8 max-w-[1050px] animate-[heroReveal_.85s_.08s_ease-out_both] text-[clamp(2.25rem,5vw,65px)] font-semibold leading-[1] tracking-[-0.055em] text-[#081426]"
+              style={{
+                fontFamily:
+                  "var(--font-manrope), Arial, Helvetica, sans-serif",
+                marginTop: "32px",
+              }}
+            >
               {project.title}
             </h1>
 
             {project.introduction && (
-              <p className="mt-6 max-w-[760px] animate-[heroReveal_.9s_.16s_ease-out_both] text-lg leading-[1.65] text-[#081426]/65 md:text-xl">
+              <p
+                className="mt-6 max-w-[760px] animate-[heroReveal_.9s_.16s_ease-out_both] text-lg leading-[1.65] text-[#081426]/65 md:text-xl"
+                style={{ marginTop: "24px" }}
+              >
                 {
                   project.introduction
                 }
