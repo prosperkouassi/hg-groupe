@@ -53,6 +53,7 @@ export default function AdminShell({
   }
 
   const navigation = [
+    { label: "Blog", href: "/admin/blog", icon: <span aria-hidden="true" className="text-xl">✎</span> },
     { label: "Partenaires", href: "/admin/partenaires", icon: <span aria-hidden="true" className="text-xl">◇</span> },
     {
       label: "Projets",
@@ -337,6 +338,7 @@ export default function AdminShell({
             </div>
           </header>
 
+          <nav aria-label="Gestion mobile" className="flex gap-3 overflow-x-auto border-b border-[#081426]/10 px-5 py-3 text-xs lg:hidden">{navigation.map(item => <Link key={item.href} href={item.href} aria-current={pathname.startsWith(item.href) ? "page" : undefined} className="rounded-full bg-white px-4 py-2">{item.label}</Link>)}</nav>
           {children}
         </div>
       </div>

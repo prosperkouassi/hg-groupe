@@ -9,6 +9,7 @@ const navigation = [
   { label: "Expertises", href: "/expertises" },
   { label: "Cas d'études", href: "/cas-etudes" },
   { label: "À propos", href: "/a-propos" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
 

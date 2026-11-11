@@ -64,5 +64,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     clearTimeout(timeout);
   }
 
+  pages.push({ url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 });
+  try {
+    const { publishedSitemap } = await import('@/lib/blog/data');
+    const articles = await publishedSitemap();
+    for (const article of articles) {
+      if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(article.slug)) pages.push({ url: `${baseUrl}/blog/${article.slug}`, lastModified: article.modified });
+    }
+  } catch { console.warn('Sitemap : articles indisponibles.'); }
   return pages;
 }

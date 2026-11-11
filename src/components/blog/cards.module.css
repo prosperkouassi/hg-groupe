@@ -1,0 +1,32 @@
+.readButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 44px;
+  max-width: 100%;
+  margin-top: 22px;
+  padding: 12px 22px;
+  border: 1px solid #071529;
+  border-radius: 999px;
+  background: #071529;
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+.readButton:hover {
+  background: #15273e;
+  border-color: #15273e;
+  color: #fff;
+}
+.readButton:focus-visible {
+  outline: 3px solid #F84138;
+  outline-offset: 4px;
+}
+@media(prefers-reduced-motion:reduce) {
+  .readButton { transition: none; }
+}

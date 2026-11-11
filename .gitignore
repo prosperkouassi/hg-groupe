@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local blog uploads (production uses BLOG_MEDIA_DIR)
+.blog-media/

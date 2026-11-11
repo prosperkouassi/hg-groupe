@@ -12,7 +12,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@tiptap/extension-file-handler": "^3.33.1",
+    "@tiptap/extension-image": "^3.33.1",
+    "@tiptap/pm": "^3.33.1",
+    "@tiptap/react": "^3.33.1",
+    "@tiptap/starter-kit": "^3.33.1",
     "bcryptjs": "^3.0.3",
+    "cheerio": "^1.2.0",
     "gsap": "^3.15.0",
     "motion": "^13.1.1",
     "mysql2": "^3.24.4",
@@ -20,6 +26,7 @@
     "nodemailer": "^10.0.12",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "sharp": "^0.35.5",
     "wowjs": "^1.1.3"
   },
   "devDependencies": {
