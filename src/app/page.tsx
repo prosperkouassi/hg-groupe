@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import HomePartners from "@/components/HomePartners";
 import HomeHero from "@/components/HomeHero";
 import HomeManifesto from "@/components/HomeManifesto";
 import HomePoles from "@/components/HomePoles";
@@ -17,6 +19,7 @@ export default function Home() {
 
       <HomeHero />
       <HomeManifesto />
+      <Suspense fallback={null}><HomePartners /></Suspense>
       <HomePoles />
       <HomeJourney />
       <HomeMethod />

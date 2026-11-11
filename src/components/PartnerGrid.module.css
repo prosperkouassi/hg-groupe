@@ -1,0 +1,274 @@
+
+/* =========================================
+   HOPLA GROUPE — PARTENAIRES
+========================================= */
+
+.section {
+  background: #f6f3ee;
+  padding: clamp(56px, 7vw, 90px) 24px;
+  color: #081426;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+/* EN-TÊTE */
+
+.header {
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.header h2 {
+  font-size: clamp(28px, 3.3vw, 48px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  margin-bottom: 18px;
+}
+
+.header > p:last-child {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #081426a6;
+}
+
+/* GRILLE */
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* CARTES */
+
+.card {
+  width: calc(
+    (100% - (var(--columns) - 1) * 20px) / var(--columns)
+  );
+
+  min-height: 180px;
+  background: #ffffff;
+  border: 1px solid #08142612;
+  border-radius: 18px;
+
+  box-shadow: 0 8px 24px #08142606;
+
+  transition:
+    transform 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.card:hover,
+.card:focus-within {
+  transform: translateY(-5px);
+  border-color: #ff7a58;
+  box-shadow: 0 16px 35px #08142612;
+}
+
+/* LOGOS */
+
+.logo {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 18px;
+  border-radius: inherit;
+}
+
+.logo img {
+  display: block;
+  width: 100%;
+  height: 145px;
+  object-fit: contain;
+
+  filter: grayscale(1);
+  opacity: 0.82;
+
+  transition:
+    filter 0.35s ease,
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.card:hover img,
+.card:focus-within img {
+  filter: grayscale(0);
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+/* CARTE APPEL À L'ACTION */
+
+.cta {
+  background: linear-gradient(
+    135deg,
+    #fff3ee,
+    #fff0f5
+  );
+
+  border: 1px dashed #ff7a58;
+  text-decoration: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  text-align: center;
+  gap: 9px;
+  padding: 20px 16px;
+}
+
+.plus {
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 0.8;
+  color: #f2295b;
+}
+
+.cta h3 {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.cta p {
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 220px;
+}
+
+.action {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ce224f;
+}
+
+.action > span {
+  margin-left: 6px;
+}
+
+/* ACCESSIBILITÉ */
+
+.card:focus-visible,
+.logo:focus-visible {
+  outline: 3px solid #993578;
+  outline-offset: 4px;
+}
+
+/* ANIMATION WOW.JS */
+
+.reveal {
+  animation-name: partnerFadeUp;
+  animation-duration: 0.65s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+@keyframes partnerFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* TABLETTE */
+
+@media (max-width: 1000px) {
+  .grid {
+    --columns: 3 !important;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 640px) {
+  .section {
+    padding: 60px 16px;
+  }
+
+  .header {
+    margin-bottom: 32px;
+  }
+
+  .grid {
+    --columns: 2 !important;
+    gap: 12px;
+  }
+
+  .card {
+    width: calc((100% - 12px) / 2);
+    min-height: 155px;
+    border-radius: 14px;
+  }
+
+  .logo {
+    min-height: 155px;
+    padding: 12px;
+  }
+
+  .logo img {
+    height: 115px;
+    filter: none;
+    opacity: 1;
+  }
+
+  .cta {
+    padding: 16px 10px;
+  }
+
+  .cta h3 {
+    font-size: 18px;
+  }
+
+  .cta p,
+  .action {
+    font-size: 12px;
+  }
+}
+
+/* MOUVEMENTS RÉDUITS */
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    visibility: visible !important;
+  }
+
+  .reveal {
+    animation: none !important;
+  }
+
+  .card,
+  .logo img {
+    transition: none;
+  }
+
+  .card:hover,
+  .card:focus-within {
+    transform: none;
+  }
+}

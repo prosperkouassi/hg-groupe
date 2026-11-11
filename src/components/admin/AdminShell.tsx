@@ -53,6 +53,7 @@ export default function AdminShell({
   }
 
   const navigation = [
+    { label: "Partenaires", href: "/admin/partenaires", icon: <span aria-hidden="true" className="text-xl">◇</span> },
     {
       label: "Projets",
       href: "/admin/projets",

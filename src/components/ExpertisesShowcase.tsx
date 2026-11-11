@@ -6,28 +6,24 @@ const digitalExpertises = [
     title: "Site web",
     description:
       "Concevoir une présence digitale cohérente avec votre identité, vos objectifs et les attentes de vos utilisateurs.",
-    href: "/expertises/site-web",
   },
   {
     number: "02",
     title: "E-commerce",
     description:
       "Créer des expériences de vente fluides, performantes et adaptées à votre activité comme à vos parcours clients.",
-    href: "/expertises/e-commerce",
   },
   {
     number: "03",
     title: "SaaS",
     description:
       "Transformer un besoin métier en solution digitale structurée, intuitive et capable d’évoluer avec votre organisation.",
-    href: "/expertises/saas",
   },
   {
     number: "04",
     title: "Digitalisation",
     description:
       "Simplifier les processus, connecter les outils et automatiser les usages pour rendre votre organisation plus efficace.",
-    href: "/expertises/digitalisation",
   },
 ];
 
@@ -37,21 +33,18 @@ const organisationExpertises = [
     title: "Organisation",
     description:
       "Structurer les rôles, les responsabilités et les modes de fonctionnement pour accompagner durablement l’évolution de l’organisation.",
-    href: "/expertises/organisation",
   },
   {
     number: "02",
     title: "Ressources humaines",
     description:
       "Construire des pratiques RH cohérentes avec les besoins humains, opérationnels et stratégiques de l’entreprise.",
-    href: "/expertises/ressources-humaines",
   },
   {
     number: "03",
     title: "Gestion de projet",
     description:
       "Transformer une intention en projet structuré et accompagner sa mise en œuvre jusqu’à l’obtention de résultats concrets.",
-    href: "/expertises/gestion-de-projet",
   },
 ];
 
@@ -123,10 +116,9 @@ export default function ExpertisesShowcase() {
             <div className="lg:col-span-8">
               <div className="border-t border-[#081426]/12">
                 {digitalExpertises.map((expertise) => (
-                  <Link
+                  <div
                     key={expertise.title}
-                    href={expertise.href}
-                    className="group grid gap-5 border-b border-[#081426]/12 py-8 transition-opacity duration-300 hover:opacity-70 md:grid-cols-[70px_1fr_1fr] md:items-start md:gap-6 md:py-10"
+                    className="grid gap-5 border-b border-[#081426]/12 py-8 md:grid-cols-[70px_1fr_1fr] md:items-start md:gap-6 md:py-10"
                   >
                     <span className="text-[11px] font-medium text-[#081426]/35">
                       {expertise.number}
@@ -139,7 +131,7 @@ export default function ExpertisesShowcase() {
                     <p className="max-w-[420px] text-[14px] leading-6 text-[#081426]/55 md:text-[15px] md:leading-7">
                       {expertise.description}
                     </p>
-                  </Link>
+                  </div>
                 ))}
               </div>
             </div>
@@ -184,10 +176,9 @@ export default function ExpertisesShowcase() {
             <div className="lg:col-span-8">
               <div className="border-t border-white/12">
                 {organisationExpertises.map((expertise) => (
-                  <Link
+                  <div
                     key={expertise.title}
-                    href={expertise.href}
-                    className="group grid gap-5 border-b border-white/12 py-8 transition-opacity duration-300 hover:opacity-70 md:grid-cols-[70px_1fr_1fr] md:items-start md:gap-6 md:py-10"
+                    className="grid gap-5 border-b border-white/12 py-8 md:grid-cols-[70px_1fr_1fr] md:items-start md:gap-6 md:py-10"
                   >
                     <span className="text-[11px] font-medium text-white/30">
                       {expertise.number}
@@ -200,7 +191,7 @@ export default function ExpertisesShowcase() {
                     <p className="max-w-[420px] text-[14px] leading-6 text-white/50 md:text-[15px] md:leading-7">
                       {expertise.description}
                     </p>
-                  </Link>
+                  </div>
                 ))}
               </div>
             </div>
