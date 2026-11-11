@@ -4,11 +4,11 @@ import Cards from '@/components/blog/Cards';
 import { categories } from '@/lib/blog/content';
 import { listPublished } from '@/lib/blog/data';
 import s from '@/components/blog/blog.module.css';
+import { blogMetadata } from '@/lib/blog/seo';
 export const dynamic = 'force-dynamic';
 type Props = { searchParams: Promise<{ q?: string; categorie?: string; page?: string }> };
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const p = await searchParams; const query = new URLSearchParams(); if (p.categorie) query.set('categorie', p.categorie); if (Number(p.page) > 1) query.set('page', String(Math.floor(Number(p.page))));
-  return { title: 'Le blog — Regards et conseils', description: 'Digital, organisation et ressources humaines : les conseils de Hopla Groupe pour faire avancer votre entreprise.', alternates: { canonical: `/blog${query.size ? `?${query}` : ''}` }, robots: p.q || p.categorie ? { index: false, follow: true } : undefined, openGraph: { title: 'Le blog Hopla Groupe', description: 'Des idées concrètes pour faire avancer votre entreprise', url: '/blog', type: 'website', images: ['/images/og-hopla-groupe.jpg'] } };
+  return blogMetadata(await searchParams);
 }
 export default async function BlogPage({ searchParams }: Props) {
   const p = await searchParams; const q = typeof p.q === 'string' ? p.q.slice(0,120) : ''; const category = typeof p.categorie === 'string' && (categories as readonly string[]).includes(p.categorie) ? p.categorie : '';
