@@ -8,19 +8,19 @@ import AboutProcess from "@/components/AboutProcess";
 import AboutFinalCTA from "@/components/AboutFinalCTA";
 
 export const metadata: Metadata = {
-  title: "À propos | Notre vision & nos expertises",
+  title: { absolute: "Hopla Groupe | Conseil & digitalisation en Côte d'Ivoire" },
 
   description:
-    "Découvrez Hopla Groupe, un groupe implanté en Côte d’Ivoire qui réunit deux expertises complémentaires : digital et technologie, organisation, ressources humaines et gestion de projet.",
+    "Découvrez Hopla Groupe, ses valeurs et ses deux expertises complémentaires : digitalisation et organisation des entreprises à Abidjan et en Côte d'Ivoire.",
 
   alternates: {
     canonical: "/a-propos",
   },
 
   openGraph: {
-    title: "À propos | Notre vision & nos expertises",
+    title: "Hopla Groupe | Conseil & digitalisation en Côte d'Ivoire",
     description:
-      "Découvrez Hopla Groupe et la vision qui réunit nos expertises en digital, technologie, organisation, ressources humaines et gestion de projet.",
+      "Découvrez Hopla Groupe, ses valeurs et ses deux expertises complémentaires : digitalisation et organisation des entreprises à Abidjan et en Côte d'Ivoire.",
     url: "/a-propos",
     type: "website",
     images: [
@@ -35,9 +35,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "À propos | Notre vision & nos expertises",
+    title: "Hopla Groupe | Conseil & digitalisation en Côte d'Ivoire",
     description:
-      "Découvrez Hopla Groupe et deux pôles complémentaires au service du développement et de la transformation des organisations.",
+      "Découvrez Hopla Groupe, ses valeurs et ses deux expertises complémentaires : digitalisation et organisation des entreprises à Abidjan et en Côte d'Ivoire.",
     images: ["/images/og-hopla-groupe.jpg"],
   },
 };

@@ -7,19 +7,19 @@ import PageHero from "@/components/PageHero";
 import styles from "./contact.module.css";
 
 export const metadata: Metadata = {
-  title: "Contact | Hopla Groupe",
+  title: { absolute: "Contacter Hopla Groupe à Abidjan | Conseil & digital" },
 
   description:
-    "Contactez Hopla Groupe pour échanger sur vos besoins en digital, technologie, organisation, ressources humaines ou gestion de projet.",
+    "Vous avez un projet de digitalisation, d'organisation ou de développement en Côte d'Ivoire ? Contactez Hopla Groupe pour échanger sur vos besoins.",
 
   alternates: {
     canonical: "/contact",
   },
 
   openGraph: {
-    title: "Contact | Hopla Groupe",
+    title: "Contacter Hopla Groupe à Abidjan | Conseil & digital",
     description:
-      "Échangez avec Hopla Groupe autour de vos projets et besoins en transformation.",
+      "Vous avez un projet de digitalisation, d'organisation ou de développement en Côte d'Ivoire ? Contactez Hopla Groupe pour échanger sur vos besoins.",
     url: "/contact",
     type: "website",
     images: [
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Contact | Hopla Groupe",
+    title: "Contacter Hopla Groupe à Abidjan | Conseil & digital",
     description:
-      "Échangez avec Hopla Groupe autour de vos projets et besoins en transformation.",
+      "Vous avez un projet de digitalisation, d'organisation ou de développement en Côte d'Ivoire ? Contactez Hopla Groupe pour échanger sur vos besoins.",
     images: ["/images/og-hopla-groupe.jpg"],
   },
 };

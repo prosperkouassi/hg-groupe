@@ -14,20 +14,20 @@ import {
 } from "@/lib/projects";
 
 export const metadata: Metadata = {
-  title: "Cas d’études | Hopla Groupe",
+  title: { absolute: "Réalisations & projets d'entreprises en Côte d'Ivoire | Hopla Groupe" },
 
   description:
-    "Découvrez les réalisations de Hopla Groupe en solutions digitales, sites web, e-commerce, SaaS, digitalisation, organisation, ressources humaines et gestion de projet.",
+    "Découvrez les projets accompagnés par Hopla Groupe : création de sites web, solutions digitales et projets de structuration d'entreprises à Abidjan et en Côte d'Ivoire.",
 
   alternates: {
     canonical: "/cas-etudes",
   },
 
   openGraph: {
-    title: "Cas d’études | Hopla Groupe",
+    title: "Réalisations & projets d'entreprises en Côte d'Ivoire | Hopla Groupe",
 
     description:
-      "Découvrez une sélection de projets accompagnés par Hopla Groupe en digital, technologie, organisation et développement.",
+      "Découvrez les projets accompagnés par Hopla Groupe : création de sites web, solutions digitales et projets de structuration d'entreprises à Abidjan et en Côte d'Ivoire.",
 
     url: "/cas-etudes",
 
@@ -46,10 +46,10 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
 
-    title: "Cas d’études | Hopla Groupe",
+    title: "Réalisations & projets d'entreprises en Côte d'Ivoire | Hopla Groupe",
 
     description:
-      "Découvrez une sélection de projets accompagnés par Hopla Groupe.",
+      "Découvrez les projets accompagnés par Hopla Groupe : création de sites web, solutions digitales et projets de structuration d'entreprises à Abidjan et en Côte d'Ivoire.",
 
     images: ["/images/og-hopla-groupe.jpg"],
   },

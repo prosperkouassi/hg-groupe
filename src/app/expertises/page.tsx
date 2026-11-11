@@ -5,20 +5,20 @@ import PageBreadcrumb from "@/components/PageBreadcrumb";
 import PageHero from "@/components/PageHero";
 
 export const metadata: Metadata = {
-  title: "Expertises | Digital, Organisation, RH & Projets",
+  title: { absolute: "Digitalisation & conseil en organisation à Abidjan | Hopla Groupe" },
 
   description:
-    "Découvrez les expertises de Hopla Groupe en Côte d’Ivoire : solutions digitales, organisation, ressources humaines et gestion de projet pour accompagner le développement des entreprises.",
+    "Découvrez les expertises de Hopla Groupe à Abidjan : solutions digitales avec AlteractWeb et conseil en organisation, RH et développement avec Stratég’Action.",
 
   alternates: {
     canonical: "/expertises",
   },
 
   openGraph: {
-    title: "Expertises | Digital, Organisation, RH & Projets",
+    title: "Digitalisation & conseil en organisation à Abidjan | Hopla Groupe",
 
     description:
-      "Découvrez les expertises de Hopla Groupe en Côte d’Ivoire : solutions digitales, organisation, ressources humaines et gestion de projet pour accompagner le développement des entreprises.",
+      "Découvrez les expertises de Hopla Groupe à Abidjan : solutions digitales avec AlteractWeb et conseil en organisation, RH et développement avec Stratég’Action.",
 
     url: "/expertises",
 
@@ -37,10 +37,10 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
 
-    title: "Expertises | Digital, Organisation, RH & Projets",
+    title: "Digitalisation & conseil en organisation à Abidjan | Hopla Groupe",
 
     description:
-      "Solutions digitales, organisation, ressources humaines et gestion de projet : découvrez les expertises de Hopla Groupe.",
+      "Découvrez les expertises de Hopla Groupe à Abidjan : solutions digitales avec AlteractWeb et conseil en organisation, RH et développement avec Stratég’Action.",
 
     images: ["/images/og-hopla-groupe.jpg"],
   },
