@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { ResultSetHeader } from 'mysql2';
 import pool from '@/lib/db';
-import { authorizeWrite } from '@/lib/blog/access';
+import { blogWriteGuard } from '@/lib/blog/access';
 import { slugify, validateDraft } from '@/lib/blog/content';
 export async function POST(request: Request) {
   try {
-  if (!await authorizeWrite(request)) return NextResponse.json({ message: 'Accès refusé.' }, { status: 403 });
+  const denied = await blogWriteGuard(request); if (denied) return denied;
     const body = await request.text(); if (body.length > 1000000) return NextResponse.json({ message: 'Article trop volumineux.' }, { status: 413 });
     const value = JSON.parse(body); const draft = validateDraft(value.draft); const slug = slugify(value.slug || draft.title);
     if (!slug || slug !== value.slug) throw new Error('Adresse invalide : lettres minuscules, chiffres et tirets uniquement.');

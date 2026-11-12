@@ -2,14 +2,14 @@ import { NextResponse } from 'next/server';
 import type { ResultSetHeader, RowDataPacket } from 'mysql2';
 import type { PoolConnection } from 'mysql2/promise';
 import pool from '@/lib/db';
-import { authorizeWrite, blogAdmin } from '@/lib/blog/access';
+import { blogWriteGuard, blogAdmin } from '@/lib/blog/access';
 import { slugify, textContent, validateDraft } from '@/lib/blog/content';
 import { parseScheduledAt } from '@/lib/blog/schedule';
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   let connection: PoolConnection | undefined;
   try {
-    if (!await authorizeWrite(request)) return NextResponse.json({ message: 'Accès refusé.' }, { status: 403 });
+    const denied = await blogWriteGuard(request); if (denied) return denied;
     const id = Number((await params).id); if (!Number.isSafeInteger(id) || id < 1) return NextResponse.json({ message: 'Article introuvable.' }, { status: 404 });
     const body = await request.text(); if (body.length > 1000000) return NextResponse.json({ message: 'Article trop volumineux.' }, { status: 413 });
     const v = JSON.parse(body);

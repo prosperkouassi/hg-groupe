@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
-import { authorizeWrite, blogAdmin } from '@/lib/blog/access';
+import { blogWriteGuard, blogAdmin } from '@/lib/blog/access';
 import { categories } from '@/lib/blog/content';
 import { articleSchema, proposalFromAI, validateAIBrief } from '@/lib/blog/ai-types';
 import { readReference } from '@/lib/blog/reference';
@@ -10,7 +10,7 @@ export const maxDuration = 180;
 export async function POST(request: Request) {
   let requestId: number | undefined;
   try {
-    if (!await authorizeWrite(request)) return NextResponse.json({ message: 'Accès refusé.' }, { status: 403 });
+    const denied = await blogWriteGuard(request); if (denied) return denied;
     const raw = await request.text(); if (raw.length > 20000) return NextResponse.json({ message: 'Brief trop volumineux.' }, { status: 413 });
     const value = JSON.parse(raw);
     const brief = validateAIBrief(value);
