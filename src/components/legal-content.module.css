@@ -1,0 +1,64 @@
+.page {
+  background: #f6f3ee;
+  color: #081426;
+  font-family: var(--font-manrope), sans-serif;
+}
+
+.content {
+  width: min(100% - 3rem, 780px);
+  margin-inline: auto;
+  padding-block: clamp(3rem, 7vw, 6rem);
+  font-size: 1rem;
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+
+.eyebrow {
+  color: #8c422c;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.intro {
+  margin-block: 1rem 2.5rem;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+}
+
+.content section {
+  border-top: 1px solid #08142626;
+  padding-block: 1.75rem;
+}
+
+.content h2 {
+  margin-bottom: 1rem;
+  font-family: var(--font-newsreader), serif;
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.content p + p {
+  margin-top: 1rem;
+}
+
+.content ul {
+  padding-left: 1.4rem;
+  list-style: disc;
+}
+
+.content a {
+  color: #8c422c;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.content a:hover {
+  color: #081426;
+}
+
+.content a:focus-visible {
+  outline: 2px solid #8c422c;
+  outline-offset: 4px;
+}
