@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import ExpertisesShowcase from "@/components/ExpertisesShowcase";
 import PageBreadcrumb from "@/components/PageBreadcrumb";
-import PageHero from "@/components/PageHero";
 
 export const metadata: Metadata = {
   title: { absolute: "Digitalisation & conseil en organisation à Abidjan | Hopla Groupe" },
@@ -49,15 +48,16 @@ export const metadata: Metadata = {
 export default function ExpertisesPage() {
   return (
     <main className="expertises-page">
-      <PageHero title="Notre expertise" />
-
       <PageBreadcrumb
+        atPageStart
         items={[
           {
             label: "Expertises",
           },
         ]}
       />
+
+      <h1 className="sr-only">Notre expertise</h1>
 
       <ExpertisesShowcase />
     </main>

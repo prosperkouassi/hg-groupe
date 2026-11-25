@@ -10,6 +10,7 @@ const navigation = [
   { label: "Cas d'études", href: "/cas-etudes" },
   { label: "À propos", href: "/a-propos" },
   { label: "Blog", href: "/blog" },
+  { label: "Recrutement", href: "/recrutement" },
   { label: "Contact", href: "/contact" },
 ];
 

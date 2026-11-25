@@ -1,0 +1,17 @@
+.sticky {
+  /* The fixed header has an 80/96px inner row and a 1px bottom border. */
+  --header-bottom: 81px;
+  position: sticky;
+  top: var(--header-bottom);
+  z-index: 40;
+}
+
+.start {
+  margin-block-start: var(--header-bottom);
+}
+
+@media (min-width: 64rem) {
+  .sticky {
+    --header-bottom: 97px;
+  }
+}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import PageBreadcrumb from "@/components/PageBreadcrumb";
-import PageHero from "@/components/PageHero";
 import AboutManifesto from "@/components/AboutManifesto";
 import AboutValues from "@/components/AboutValues";
 import AboutProcess from "@/components/AboutProcess";
@@ -45,15 +44,16 @@ export const metadata: Metadata = {
 export default function AProposPage() {
   return (
     <main className="a-propos-page">
-      <PageHero title="À propos" />
-
       <PageBreadcrumb
+        atPageStart
         items={[
           {
             label: "À propos",
           },
         ]}
       />
+
+      <h1 className="sr-only">À propos</h1>
 
       <AboutManifesto />
 

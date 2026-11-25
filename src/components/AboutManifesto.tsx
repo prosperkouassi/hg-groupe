@@ -66,10 +66,13 @@ export default function AboutManifesto() {
           container-hopla
           relative
           z-10
-          py-20
-          sm:py-24
-          md:py-28
-          lg:py-32
+          pt-8
+          pb-20
+          sm:pb-24
+          md:pt-12
+          md:pb-28
+          lg:pt-16
+          lg:pb-32
         "
       >
         <div

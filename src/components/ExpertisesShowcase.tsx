@@ -53,7 +53,7 @@ export default function ExpertisesShowcase() {
     <section className="bg-[#F6F3EE] text-[#081426]">
       {/* INTRODUCTION */}
 
-      <div className="mx-auto max-w-[1440px] px-6 pb-28 pt-20 md:px-10 md:pb-36 md:pt-28 lg:px-14">
+      <div className="mx-auto max-w-[1440px] px-6 pb-28 pt-8 md:px-10 md:pb-36 md:pt-12 lg:px-14 lg:pt-16">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#081426]/45">

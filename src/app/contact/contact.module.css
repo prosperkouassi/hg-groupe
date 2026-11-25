@@ -6,6 +6,7 @@
   padding:
     clamp(88px, 10vw, 150px)
     0;
+  padding-top: clamp(32px, 5vw, 64px);
 
   background: #ffffff;
 }
@@ -1519,6 +1520,10 @@
   .contactPoles {
     padding:
       78px 0;
+  }
+
+  .contactIntro {
+    padding-top: 32px;
   }
 
   .introGrid {

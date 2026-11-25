@@ -1,0 +1,47 @@
+import type { Job } from "../types";
+
+const roles = [
+  "Chargé de clientèle", "Chef de projet digital", "Développeur front-end",
+  "Conseiller en stratégie", "Responsable communication", "Chargé de production",
+  "Développeur back-end", "Analyste de données", "Designer d’interface",
+  "Consultant en organisation", "Assistant administratif", "Chef de projet éditorial",
+  "Chargé de partenariats", "Responsable de compte", "Intégrateur web",
+  "Assistant communication", "Chargé d’études", "Coordinateur de mission",
+];
+
+export const demoJobs: Job[] = roles.map((title, index) => ({
+  slug: `exemple-${index + 1}`,
+  title,
+  city: "Abidjan",
+  country: "Côte d’Ivoire",
+  countryCode: "CI",
+  company: "Hopla Groupe",
+  contract: (["CDI", "CDD", "Stage", "Alternance"] as const)[index % 4],
+  workMode: (["Sur site", "Hybride", "Télétravail"] as const)[index % 3],
+  publishedAt: new Date(Date.UTC(2026, 10, 25, 8, 30 - index * 75)).toISOString(),
+  deadline: index === 3 ? "2026-11-24T23:59:59Z" : null,
+  closed: index === 3,
+  demo: true,
+  coverLetterRequired: index % 2 === 0,
+  positions: 1,
+  experience: index % 4 === 2 ? "Débutant accepté" : "Deux ans d’expérience",
+  education: "Bac +3 ou expérience équivalente",
+  salary: null,
+  hours: index === 0 ? "Temps plein" : null,
+  startDate: null,
+  description: "Au sein de l’équipe Hopla Groupe, vous participez à la préparation et au suivi de projets pour nos clients. Vous travaillez avec les équipes métiers pour définir les priorités et assurer la qualité des livrables.",
+  missions: ["Préparer les briefs et organiser le suivi des projets.", "Coordonner les échanges avec les équipes.", "Documenter les décisions et présenter les résultats."],
+  profile: ["Vous savez organiser votre travail et rendre compte de son avancement.", "Vous aimez collaborer avec des profils différents."],
+  skills: ["Communication écrite et orale", "Gestion des priorités", "Analyse et synthèse"],
+  benefits: ["Accompagnement à la prise de poste", "Temps dédié au partage de pratiques"],
+  process: ["Échange avec le recruteur", "Entretien avec l’équipe"],
+  recruiter: {
+    name: "Awa Koné",
+    role: "Responsable recrutement",
+    company: "Hopla Groupe",
+    phone: null,
+    email: null,
+    linkedin: null,
+    avatar: null,
+  },
+}));

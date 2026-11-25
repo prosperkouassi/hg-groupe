@@ -1,4 +1,5 @@
 import Link from "next/link";
+import styles from "./PageBreadcrumb.module.css";
 
 type BreadcrumbItem = {
   label: string;
@@ -7,13 +8,15 @@ type BreadcrumbItem = {
 
 type PageBreadcrumbProps = {
   items: BreadcrumbItem[];
+  atPageStart?: boolean;
 };
 
 export default function PageBreadcrumb({
   items,
+  atPageStart = false,
 }: PageBreadcrumbProps) {
   return (
-    <div className="page-breadcrumb">
+    <div className={`page-breadcrumb ${styles.sticky}${atPageStart ? ` ${styles.start}` : ""}`}>
       <div className="container-hopla">
         <nav
           aria-label="Fil d’Ariane"

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import CasesArchive from "@/components/cases/CasesArchive";
 import PageBreadcrumb from "@/components/PageBreadcrumb";
-import PageHero from "@/components/PageHero";
 
 import {
   getCaseCategories,
@@ -66,15 +65,16 @@ export default async function CasEtudesPage() {
 
   return (
     <main className="cas-etudes-page">
-      <PageHero title="Cas d’études" />
-
       <PageBreadcrumb
+        atPageStart
         items={[
           {
             label: "Cas d’études",
           },
         ]}
       />
+
+      <h1 className="sr-only">Cas d’études</h1>
 
       <CasesArchive
         domains={domains}

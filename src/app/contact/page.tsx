@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import PageBreadcrumb from "@/components/PageBreadcrumb";
-import PageHero from "@/components/PageHero";
 
 import styles from "./contact.module.css";
 
@@ -44,15 +43,16 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main className="contact-page">
-      <PageHero title="Contact" />
-
       <PageBreadcrumb
+        atPageStart
         items={[
           {
             label: "Contact",
           },
         ]}
       />
+
+      <h1 className="sr-only">Contact</h1>
 
       <section className={styles.contactIntro}>
         <div className="container-hopla">
