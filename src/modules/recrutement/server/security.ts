@@ -38,17 +38,24 @@ export function verifyOrigin(request: Request) {
   }
 }
 
+export function getRecruitmentTokenKey() {
+  const key = process.env.RECRUTEMENT_TOKEN_KEY;
+  if (!key || !/^[a-f0-9]{64}$/i.test(key)) throw new ApplicationError(503, applicationUnavailable);
+  return Buffer.from(key, "hex");
+}
+
 export function getApplicationConfig() {
-  const { RECRUTEMENT_ORIGIN: input, RECRUTEMENT_TOKEN_KEY: key, RECRUTEMENT_CANDIDATURES_ENABLED: enabled,
+  const { RECRUTEMENT_ORIGIN: input, RECRUTEMENT_CANDIDATURES_ENABLED: enabled,
     RECRUTEMENT_OUTBOX_SECRET: secret } = process.env;
-  if (enabled !== "true" || !input || !key || !/^[a-f0-9]{64}$/i.test(key) || !secret || secret.length < 32) {
+  if (enabled !== "true" || !input || !secret || secret.length < 32) {
     throw new ApplicationError(503, applicationUnavailable);
   }
+  const key = getRecruitmentTokenKey();
   const origin = new URL(input);
   if (origin.protocol !== "https:" || origin.origin !== input) {
     throw new ApplicationError(503, applicationUnavailable);
   }
-  return { key: Buffer.from(key, "hex"), origin: origin.origin };
+  return { key, origin: origin.origin };
 }
 
 const tokenContext = Buffer.from("hopla-recrutement-verification-v1");

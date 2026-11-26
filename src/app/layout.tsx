@@ -7,6 +7,7 @@ import {
 import "./globals.css";
 
 import SiteChrome from "@/components/SiteChrome";
+import { publicRecruitmentEnabled } from "@/modules/recrutement/public-visibility";
 
 const siteUrl = "https://hoplagroupe.com";
 
@@ -245,7 +246,7 @@ export default function RootLayout({
             SITE
         ====================================================== */}
 
-        <SiteChrome>
+        <SiteChrome showRecruitment={publicRecruitmentEnabled()}>
           {children}
         </SiteChrome>
       </body>

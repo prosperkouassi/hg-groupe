@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import PageHero from "@/components/PageHero";
 import PageBreadcrumb from "@/components/PageBreadcrumb";
 import Confirmation from "@/modules/recrutement/application/Confirmation";
+import { publicApplicationsEnabled } from "@/modules/recrutement/public-visibility";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Confirmer ma candidature",
@@ -11,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 export default function ConfirmationPage() {
+  if (!publicApplicationsEnabled()) notFound();
   return (
     <main>
       <PageHero title="Confirmation de candidature" compact />

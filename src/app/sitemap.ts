@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { publicOffersEnabled, publicRecruitmentEnabled } from "@/modules/recrutement/public-visibility";
 
 // Query publication state on each request; do not cache a database outage.
 export const dynamic = "force-dynamic";
@@ -72,5 +73,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(article.slug)) pages.push({ url: `${baseUrl}/blog/${article.slug}`, lastModified: article.modified });
     }
   } catch { console.warn('Sitemap : articles indisponibles.'); }
+
+  if (process.env.NODE_ENV !== "development" && publicRecruitmentEnabled()) {
+    pages.push({ url: `${baseUrl}/recrutement`, changeFrequency: "weekly", priority: 0.7 });
+    if (publicOffersEnabled()) {
+      try {
+        const { getPublicJobSitemapSlugs } = await import("@/modules/recrutement/server/jobs");
+        for (const slug of await getPublicJobSitemapSlugs()) {
+          pages.push({ url: `${baseUrl}/recrutement/${slug}` });
+        }
+      } catch {
+        console.warn("Sitemap : offres de recrutement indisponibles.");
+      }
+    }
+  }
+
   return pages;
 }

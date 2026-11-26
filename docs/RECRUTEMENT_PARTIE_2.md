@@ -39,6 +39,14 @@ Variables côté serveur. MySQL `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_
 
 ## Conditions de mise en production
 
+### Recette protégée avant activation
+
+Sur le site public, garder `RECRUTEMENT_OFFRES_ENABLED=false` et `RECRUTEMENT_CANDIDATURES_ENABLED=false`. Pour tester les parcours complets, utiliser une instance séparée avec une origine HTTPS soumise à un contrôle d’accès et des données fictives. Protéger aussi les API publiques Recrutement derrière ce contrôle. Activer les interrupteurs sur cette instance uniquement et utiliser un collecteur SMTP sans relais pour le double opt-in. Vérifier les accès administrateur et recruteur, les deux routes de téléchargement, les rejets anonymes, la publication et le rendu des sections et du profil stockés en JSON.
+
+Le téléchargement privé exige toujours une clé `RECRUTEMENT_TOKEN_KEY` valide, une session, une autorisation et un ticket. Il reste disponible pour les comptes habilités lorsque la réception publique est suspendue. Le renvoi du lien de validation et le traitement de la file restent suspendus avec la réception.
+
+Appliquer les interrupteurs au build et au démarrage. Le menu des pages statiques utilise la valeur au build. Après un changement d’interrupteur, reconstruire avant de vérifier le menu desktop et mobile, le sitemap, les métadonnées et les accès directs.
+
 - Faire valider la recette MySQL et SMTP, puis obtenir l’autorisation de déploiement. Garder les interrupteurs publics désactivés jusqu’à cette validation.
 - Les deux autorisations reçues couvrent le lien partagé et les raccords publics. Le moteur utilise les paramètres validés pour le consentement, les documents, les quotas de soumission et les prochains jetons. La notification d’administration préserve l’adresse existante et ajoute la destination confirmée, dédupliquée. La rétention fournit une estimation sans suppression planifiée.
 - Les deux routes de documents partagent la session active, le rôle explicite, les règles de périmètre et le journal des téléchargements. L’ancienne route conserve son URL, le ticket dans le fragment remis par le `POST` et la lecture par en-tête `Authorization: Bearer`. Les tickets de l’ancien format doivent être renouvelés après la mise à jour. Les migrations Partie 2 qui installent les rôles, les affectations et les événements sont des prérequis de l’ancienne route sur cette version.

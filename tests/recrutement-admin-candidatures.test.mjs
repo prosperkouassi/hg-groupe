@@ -189,7 +189,7 @@ test("CSV export selects only validated applications and neutralizes spreadsheet
   assert.match(csv, /"'\+225000000000"/);
 });
 
-test("private downloads require a valid ticket bound to the actor and write a download event", async (t) => {
+test("private downloads stay authorized with public intake disabled, require an actor-bound ticket and log reads", async (t) => {
   t.mock.method(Date, "now", () => 1_800_000_000_000);
   const id = randomUUID();
   const applicationId = randomUUID();
@@ -198,7 +198,11 @@ test("private downloads require a valid ticket bound to the actor and write a do
       id: applicationId, applicationType: job, status: "reviewing", extension: "pdf", content: Buffer.from("private"),
     }];
     return [{ authorized: 1 }];
-  }, enabled);
+  }, {
+    RECRUTEMENT_CANDIDATURES_ENABLED: "false",
+    RECRUTEMENT_DOCUMENT_ADMIN_IDS: "1",
+    RECRUTEMENT_TOKEN_KEY: enabled.RECRUTEMENT_TOKEN_KEY,
+  });
   const { ticket } = await backend.issueAdminDocument(recruiter, id);
   await assert.rejects(backend.readAdminDocument(admin, id, ticket), { status: 404 });
   const response = await backend.readAdminDocument(recruiter, id, ticket);
@@ -233,7 +237,7 @@ test("legacy downloads require the current session, role and document scope and 
       }] : [{ authorized: 1 }];
     }
     return [];
-  }, enabled, { adminId: recruiter.id });
+  }, { ...enabled, RECRUTEMENT_CANDIDATURES_ENABLED: "false" }, { adminId: recruiter.id });
   const { GET, POST } = await loadLegacyRoute();
   assert.equal((await POST(requestTicket("https://unrelated.test"), context)).status, 403);
   assert.equal(calls.length, 0);

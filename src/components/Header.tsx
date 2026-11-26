@@ -14,8 +14,9 @@ const navigation = [
   { label: "Contact", href: "/contact" },
 ];
 
-export default function Header() {
+export default function Header({ showRecruitment }: { showRecruitment: boolean }) {
   const pathname = usePathname();
+  const links = showRecruitment ? navigation : navigation.filter(({ href }) => href !== "/recrutement");
 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -109,7 +110,7 @@ export default function Header() {
 
         {/* DESKTOP NAVIGATION */}
         <nav className="hidden items-center gap-8 lg:flex">
-          {navigation.map((item) => (
+          {links.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -257,7 +258,7 @@ export default function Header() {
         <div className="container-hopla relative z-10 flex min-h-full flex-col py-8">
           {/* NAVIGATION */}
           <nav className="flex flex-col">
-            {navigation.map((item, index) => (
+            {links.map((item, index) => (
               <Link
                 key={item.href}
                 href={item.href}

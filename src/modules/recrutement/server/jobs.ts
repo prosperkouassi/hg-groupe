@@ -1,5 +1,6 @@
 import type { RowDataPacket } from "mysql2";
 import { isPublicOfferAsset } from "../public-assets";
+import { publicApplicationsEnabled, publicOffersEnabled } from "../public-visibility";
 import type { Job, JobsPage, Recruiter } from "../types";
 
 const pageSize = 15;
@@ -27,7 +28,18 @@ interface JobRow extends RowDataPacket, Omit<Job, "closed" | "demo" | "coverLett
   attachments?: unknown;
 }
 
-export function publicRecruiter(value: unknown): Recruiter | null {
+function readJsonColumn(value: unknown): unknown {
+  // mysql2 can return decoded JSON or JSON text, depending on the server metadata.
+  if (typeof value !== "string") return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+export function publicRecruiter(raw: unknown): Recruiter | null {
+  const value = readJsonColumn(raw);
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const fields = value as Record<string, unknown>;
   const visibleText = (key: string) => typeof fields[key] === "string" ? fields[key] : null;
@@ -47,20 +59,13 @@ export function publicRecruiter(value: unknown): Recruiter | null {
   };
 }
 
-function publicSection(value: unknown) {
+function publicSection(raw: unknown) {
+  const value = readJsonColumn(raw);
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 }
 
-function publicAttachments(value: unknown) {
-  // mysql2 returns JSON columns as objects on MySQL and as text on some MariaDB configurations.
-  let entries = value;
-  if (typeof entries === "string") {
-    try {
-      entries = JSON.parse(entries);
-    } catch {
-      return [];
-    }
-  }
+function publicAttachments(raw: unknown) {
+  const entries = readJsonColumn(raw);
   return Array.isArray(entries) ? [...new Set(entries.filter(path => isPublicOfferAsset(path, false)))].slice(0, 10) : [];
 }
 
@@ -103,10 +108,14 @@ export function isOpen(job: Job) {
 }
 
 export function canApply(job: Job) {
-  return isOpen(job) && (job.demo || process.env.RECRUTEMENT_CANDIDATURES_ENABLED === "true");
+  return isOpen(job) && (job.demo || publicApplicationsEnabled());
 }
 
 export async function getJobs(requestedPage: number): Promise<JobsPage> {
+  if (!publicOffersEnabled()) {
+    return { jobs: [], page: 1, totalPages: 1, total: 0, unavailable: false };
+  }
+
   try {
     if (process.env.NODE_ENV === "development") {
       const { demoJobs } = await import("./demo-jobs");
@@ -119,10 +128,6 @@ export async function getJobs(requestedPage: number): Promise<JobsPage> {
         total: demoJobs.length,
         unavailable: false,
       };
-    }
-
-    if (process.env.RECRUTEMENT_OFFRES_ENABLED !== "true") {
-      return { jobs: [], page: 1, totalPages: 1, total: 0, unavailable: false };
     }
 
     const { default: pool } = await import("@/lib/db");
@@ -146,14 +151,12 @@ export async function getJobs(requestedPage: number): Promise<JobsPage> {
 }
 
 export async function getJob(slug: string): Promise<Job | null> {
-  if (slug === "confirmation" || slug.length > 140 || !slugPattern.test(slug)) return null;
+  if (!publicOffersEnabled() || slug === "confirmation" || slug.length > 140 || !slugPattern.test(slug)) return null;
 
   if (process.env.NODE_ENV === "development") {
     const { demoJobs } = await import("./demo-jobs");
     return demoJobs.find((job) => job.slug === slug) ?? null;
   }
-
-  if (process.env.RECRUTEMENT_OFFRES_ENABLED !== "true") return null;
 
   const { default: pool } = await import("@/lib/db");
   const [rows] = await withPublicMedia(withMedia =>
@@ -163,6 +166,18 @@ export async function getJob(slug: string): Promise<Job | null> {
     ),
   );
   return rows[0] ? fromRow(rows[0]) : null;
+}
+
+export async function getPublicJobSitemapSlugs() {
+  if (process.env.NODE_ENV === "development" || !publicOffersEnabled()) return [];
+
+  const { default: pool } = await import("@/lib/db");
+  const [rows] = await pool.execute<(RowDataPacket & { slug: string })[]>(
+    `SELECT slug FROM recruitment_jobs WHERE ${published}
+       AND closed = FALSE AND (deadline IS NULL OR deadline > UTC_TIMESTAMP())
+       ORDER BY published_at DESC, slug ASC`,
+  );
+  return rows.map(({ slug }) => slug).filter(slug => slug.length <= 140 && slugPattern.test(slug));
 }
 
 export async function getJobPage(job: Job) {

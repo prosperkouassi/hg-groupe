@@ -4,7 +4,7 @@ import type { PoolConnection, RowDataPacket } from "mysql2/promise";
 import pool from "@/lib/db";
 import { createDownloadTicket, verifyDownloadTicket } from "../server/downloads";
 import { queueEmail } from "../server/email";
-import { ApplicationError, createToken, getApplicationConfig, limit, tokenHash } from "../server/security";
+import { ApplicationError, createToken, getApplicationConfig, getRecruitmentTokenKey, limit, tokenHash } from "../server/security";
 import { loadRecruitmentSettings } from "./settings";
 
 export type ApplicationActor = { id: number; role: "admin" | "manager" | "recruiter" };
@@ -292,7 +292,7 @@ function documentKey(actor: ApplicationActor, id: string) {
   scope(actor);
   const allowed = (process.env.RECRUTEMENT_DOCUMENT_ADMIN_IDS ?? "").split(",").map((value) => value.trim());
   if (!uuid.test(id) || (actor.role === "admin" && !allowed.includes(String(actor.id)))) return unavailable();
-  return createHmac("sha256", getApplicationConfig().key).update("recruitment-admin-audited-document-v1").digest();
+  return createHmac("sha256", getRecruitmentTokenKey()).update("recruitment-admin-audited-document-v1").digest();
 }
 
 export async function issueAdminDocument(actor: ApplicationActor, id: string) {

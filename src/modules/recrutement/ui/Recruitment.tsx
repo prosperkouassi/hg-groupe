@@ -6,6 +6,7 @@ import { loadRecruitmentSettings } from "@/modules/recrutement/admin/settings";
 import { getApplicationConfig } from "@/modules/recrutement/server/security";
 
 import { formatDate, formatPublication } from "@/modules/recrutement/dates";
+import { publicApplicationsEnabled } from "@/modules/recrutement/public-visibility";
 import type { Job, JobsPage } from "@/modules/recrutement/types";
 
 import JobDetail from "./JobDetail";
@@ -48,8 +49,9 @@ export default async function Recruitment({ list, selected }: { list: JobsPage; 
   const { jobs, page, totalPages, total, unavailable } = list;
   const detail = selected ?? jobs[0];
   const hasDemo = detail?.demo || jobs.some((job) => job.demo);
+  const acceptsApplications = publicApplicationsEnabled();
   let policy: ApplicationPolicy | undefined;
-  if (process.env.NODE_ENV === "production" && process.env.RECRUTEMENT_CANDIDATURES_ENABLED === "true") {
+  if (process.env.NODE_ENV === "production" && acceptsApplications) {
     try {
       getApplicationConfig();
       const { consentText, allowedFormats, maxFileMiB } = await loadRecruitmentSettings();
@@ -61,16 +63,16 @@ export default async function Recruitment({ list, selected }: { list: JobsPage; 
 
   return (
     <RecruitmentFrame job={selected} page={page} hasBoard={Boolean(detail)}>
-      <div className={styles.pageActions}>
+      {(hasDemo || acceptsApplications) && <div className={styles.pageActions}>
         {hasDemo && <p className={styles.demo}>Aperçu de développement · Offres fictives</p>}
-        <ApplicationButton
+        {acceptsApplications && <ApplicationButton
           applicationType="spontaneous_application"
           className={styles.spontaneous}
           nationalities={getNationalities()}
           unavailable={!policy}
           policy={policy}
-        />
-      </div>
+        />}
+      </div>}
       {detail ? (
         <div className={styles.board} data-view={selected ? "detail" : "archive"}>
           <section className={styles.list} aria-labelledby="liste-offres">

@@ -7,10 +7,12 @@ import Header from "@/components/Header";
 
 type SiteChromeProps = {
   children: React.ReactNode;
+  showRecruitment: boolean;
 };
 
 export default function SiteChrome({
   children,
+  showRecruitment,
 }: SiteChromeProps) {
   const pathname = usePathname();
 
@@ -32,7 +34,7 @@ export default function SiteChrome({
 
   return (
     <>
-      <Header />
+      <Header showRecruitment={showRecruitment} />
       {children}
       <Footer />
     </>
