@@ -1,3 +1,4 @@
+import { loadRecruitmentSettings } from "@/modules/recrutement/admin/settings";
 import { processConfirmation } from "@/modules/recrutement/server/applications";
 import { applicationError } from "@/modules/recrutement/server/security";
 
@@ -5,9 +6,8 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
-    return await processConfirmation(request, "resend");
+    return await processConfirmation(request, "resend", loadRecruitmentSettings);
   } catch (error) {
     return applicationError(error);
   }
 }
-

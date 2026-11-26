@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import ApplicationButton from "@/modules/recrutement/application/ApplicationButton";
+import ApplicationButton, { type ApplicationPolicy } from "@/modules/recrutement/application/ApplicationButton";
 import { formatDate, formatPublication } from "@/modules/recrutement/dates";
 import { canApply, isOpen } from "@/modules/recrutement/server/jobs";
 import type { Job } from "@/modules/recrutement/types";
@@ -20,8 +20,8 @@ function recruiterLinkedIn(value: string | null) {
   return null;
 }
 
-function Recruiter({ recruiter }: { recruiter: NonNullable<Job["recruiter"]> }) {
-  const initials = recruiter.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
+export function Recruiter({ recruiter }: { recruiter: NonNullable<Job["recruiter"]> }) {
+  const initials = recruiter.initials ?? recruiter.name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase();
   const linkedIn = recruiterLinkedIn(recruiter.linkedin);
   // Serve only explicitly public local portraits, with initials as the default.
   const avatar = recruiter.avatar && /^\/images\/(?:[\w-]+\/)*[\w-]+\.(?:avif|jpe?g|png|webp)$/i.test(recruiter.avatar)
@@ -51,10 +51,16 @@ function Recruiter({ recruiter }: { recruiter: NonNullable<Job["recruiter"]> }) 
   );
 }
 
-export default function JobDetail({ job, backHref, isPageTitle }: { job: Job; backHref: string; isPageTitle: boolean }) {
+export default function JobDetail({ job, backHref, isPageTitle, policy }: {
+  job: Job;
+  backHref: string;
+  isPageTitle: boolean;
+  policy?: ApplicationPolicy;
+}) {
   const Title = isPageTitle ? "h1" : "h2";
   const action = canApply(job) ? (
-    <ApplicationButton slug={job.slug} title={job.title} coverLetterRequired={job.coverLetterRequired} demo={job.demo} className={styles.primary} />
+    <ApplicationButton slug={job.slug} title={job.title} coverLetterRequired={job.coverLetterRequired}
+      demo={job.demo} unavailable={!job.demo && !policy} policy={policy} className={styles.primary} />
   ) : (
     <span className={styles.closed}>
       {isOpen(job) ? "Candidatures temporairement indisponibles" : "Candidatures closes"}
@@ -90,6 +96,7 @@ export default function JobDetail({ job, backHref, isPageTitle }: { job: Job; ba
           <Title id="titre-offre" className="font-display">{job.title}</Title>
           <p>{[job.company, job.city, job.country].filter(Boolean).join(" · ")}</p>
           <ul className={styles.tags} aria-label="Conditions de travail">
+            {job.featured && <li>À la une</li>}
             <li>{job.contract}</li>
             <li>{job.workMode}</li>
           </ul>
@@ -100,6 +107,16 @@ export default function JobDetail({ job, backHref, isPageTitle }: { job: Job; ba
         </div>
       </div>
       <div className={styles.reading} tabIndex={0} role="region" aria-label="Détail de l’offre">
+        {job.imageUrl && (
+          <Image
+            src={job.imageUrl}
+            alt=""
+            width={1200}
+            height={600}
+            sizes="(max-width: 760px) 100vw, (max-width: 1440px) 62vw, 850px"
+            style={{ width: "100%", height: "auto", maxHeight: "21rem", objectFit: "cover", borderRadius: "12px" }}
+          />
+        )}
         <dl className={styles.facts}>
           {facts.filter(({ value }) => value).map(({ label, value }) => (
             <div key={label}>
@@ -118,6 +135,18 @@ export default function JobDetail({ job, backHref, isPageTitle }: { job: Job; ba
             <ul>{items.map((item, index) => <li key={index}>{item}</li>)}</ul>
           </section>
         ))}
+        {Boolean(job.attachments?.length) && (
+          <section className={styles.detailSection}>
+            <h3>Pièces jointes de l’offre</h3>
+            <ul>
+              {job.attachments?.map(path => (
+                <li key={path}>
+                  <a href={path} download className="underline underline-offset-4">{path.split("/").pop()}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         <section className={styles.recruiterCard}>
           <h3>Recruteur</h3>
           {job.recruiter ? <Recruiter recruiter={job.recruiter} /> : <p>{job.company ?? "Hopla Groupe"}</p>}

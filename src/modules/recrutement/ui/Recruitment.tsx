@@ -1,7 +1,9 @@
 import Link from "next/link";
 
-import ApplicationButton from "@/modules/recrutement/application/ApplicationButton";
+import ApplicationButton, { type ApplicationPolicy } from "@/modules/recrutement/application/ApplicationButton";
 import { getNationalities } from "@/modules/recrutement/application/fields";
+import { loadRecruitmentSettings } from "@/modules/recrutement/admin/settings";
+import { getApplicationConfig } from "@/modules/recrutement/server/security";
 
 import { formatDate, formatPublication } from "@/modules/recrutement/dates";
 import type { Job, JobsPage } from "@/modules/recrutement/types";
@@ -29,6 +31,7 @@ function JobCard({ job, active, selected }: {
         <h3>{job.title}</h3>
         <p>{job.city}{job.company && ` · ${job.company}`}</p>
         <ul className={styles.tags} aria-label="Conditions de travail">
+          {job.featured && <li>À la une</li>}
           <li>{job.contract}</li>
           <li>{job.workMode}</li>
         </ul>
@@ -41,12 +44,20 @@ function JobCard({ job, active, selected }: {
   );
 }
 
-export default function Recruitment({ list, selected }: { list: JobsPage; selected?: Job }) {
+export default async function Recruitment({ list, selected }: { list: JobsPage; selected?: Job }) {
   const { jobs, page, totalPages, total, unavailable } = list;
   const detail = selected ?? jobs[0];
   const hasDemo = detail?.demo || jobs.some((job) => job.demo);
-  const spontaneousUnavailable = process.env.NODE_ENV !== "production"
-    || process.env.RECRUTEMENT_CANDIDATURES_ENABLED !== "true";
+  let policy: ApplicationPolicy | undefined;
+  if (process.env.NODE_ENV === "production" && process.env.RECRUTEMENT_CANDIDATURES_ENABLED === "true") {
+    try {
+      getApplicationConfig();
+      const { consentText, allowedFormats, maxFileMiB } = await loadRecruitmentSettings();
+      policy = { consentText, allowedFormats, maxFileMiB };
+    } catch {
+      // Keep the public form available for reading while submissions remain disabled.
+    }
+  }
 
   return (
     <RecruitmentFrame job={selected} page={page} hasBoard={Boolean(detail)}>
@@ -56,7 +67,8 @@ export default function Recruitment({ list, selected }: { list: JobsPage; select
           applicationType="spontaneous_application"
           className={styles.spontaneous}
           nationalities={getNationalities()}
-          unavailable={spontaneousUnavailable}
+          unavailable={!policy}
+          policy={policy}
         />
       </div>
       {detail ? (
@@ -90,7 +102,7 @@ export default function Recruitment({ list, selected }: { list: JobsPage; select
               </nav>
             )}
           </section>
-          <JobDetail key={detail.slug} job={detail} isPageTitle={Boolean(selected)} backHref={`${archiveHref(page)}#offres`} />
+          <JobDetail key={detail.slug} job={detail} isPageTitle={Boolean(selected)} backHref={`${archiveHref(page)}#offres`} policy={policy} />
         </div>
       ) : (
         <section className={styles.notice}>

@@ -3,6 +3,7 @@ import { randomUUID, timingSafeEqual } from "node:crypto";
 import type { Pool, PoolConnection, RowDataPacket } from "mysql2/promise";
 
 import { isNationalityCode, normalizeInternationalPhone } from "../application/fields";
+import type { RecruitmentSettings } from "../admin/settings";
 import { maxApplicationBytes, readDocument } from "./documents";
 import { deliverEmail, getMailer, queueEmail } from "./email";
 import { getJob, isOpen } from "./jobs";
@@ -12,6 +13,13 @@ import {
 } from "./security";
 
 type ApplicationRow = RowDataPacket & { id: string; expired: number };
+type LoadSettings = () => Promise<RecruitmentSettings>;
+
+function expiration(settings?: RecruitmentSettings) {
+  return settings
+    ? { sql: "TIMESTAMPADD(HOUR, ?, UTC_TIMESTAMP())", args: [settings.confirmationHours] }
+    : { sql: "DATE_ADD(UTC_TIMESTAMP(), INTERVAL 48 HOUR)", args: [] };
+}
 
 async function formData(request: Request) {
   const bounded = await boundedBody(request, "multipart/form-data", maxApplicationBytes);
@@ -88,14 +96,15 @@ async function sendIfAvailable(...args: Parameters<typeof deliverEmail>) {
   }
 }
 
-export async function submitApplication(request: Request) {
+export async function submitApplication(request: Request, loadSettings?: LoadSettings) {
   verifyOrigin(request);
   const enabled = process.env.RECRUTEMENT_CANDIDATURES_ENABLED === "true";
   if (!enabled && process.env.NODE_ENV !== "development") throw new ApplicationError(503, applicationUnavailable);
 
   const config = enabled ? getApplicationConfig() : null;
   const pool = config ? (await import("@/lib/db")).default : null;
-  if (config && pool) await limit(pool, config.key, "submit-ip", ipScope(request), 12, 600);
+  const settings = config ? await loadSettings?.() : undefined;
+  if (config && pool) await limit(pool, config.key, "submit-ip", ipScope(request), settings?.ipLimit ?? 12, 600);
 
   const form = await formData(request);
   if (field(form, "website", 0, false)) throw new ApplicationError(422, "Le formulaire est invalide.");
@@ -110,7 +119,7 @@ export async function submitApplication(request: Request) {
   if (submissionId && !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(submissionId)) {
     throw new ApplicationError(422, "Le formulaire est invalide.");
   }
-  if (pool && config) await limit(pool, config.key, "submit-email", email, 3, 3600);
+  if (pool && config) await limit(pool, config.key, "submit-email", email, settings?.emailLimit ?? 3, 3600);
   const job = target.slug ? await getJob(target.slug) : null;
   if (target.slug && (!job || !isOpen(job))) throw new ApplicationError(409, "Les candidatures pour cette offre sont closes.");
 
@@ -118,9 +127,22 @@ export async function submitApplication(request: Request) {
     readDocument(form.get("cv"), "cv", true),
     readDocument(form.get("coverLetter"), "coverLetter", job?.coverLetterRequired ?? false),
   ]);
+  if (settings) {
+    for (const document of documents) {
+      if (!document) continue;
+      const label = document.kind === "cv" ? "Le CV" : "La lettre de motivation";
+      if (!settings.allowedFormats.includes(document.extension)) {
+        throw new ApplicationError(422, `${label} doit être dans l’un des formats acceptés : ${settings.allowedFormats.map((format) => format.toUpperCase()).join(", ")}.`);
+      }
+      if (document.content.length > settings.maxFileMiB * 1024 * 1024) {
+        throw new ApplicationError(422, `${label} doit respecter la taille maximale de ${settings.maxFileMiB} Mo.`);
+      }
+    }
+  }
   if (job?.demo) throw new ApplicationError(503, "Cette offre est une démonstration. Aucune candidature n’a été enregistrée.");
   if (!pool || !config) throw new ApplicationError(503, applicationUnavailable);
-  const mailer = getMailer();
+  const mailer = getMailer(settings);
+  const expiry = expiration(settings);
   const token = createToken(config.key);
   const id = randomUUID();
   const submissionKey = submissionId ? submissionHash(config.key, target.slug ?? ":spontaneous", email, submissionId.toLowerCase()) : null;
@@ -145,9 +167,9 @@ export async function submitApplication(request: Request) {
         `INSERT INTO recrutement_candidatures
          (id, application_type, job_slug, job_title, first_name, last_name, email, phone, motivation, city, nationality,
           desired_position, consented_at, created_at, token_hash, token_expires_at, submission_key)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP(), ?, DATE_ADD(UTC_TIMESTAMP(), INTERVAL 48 HOUR), ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP(), ?, ${expiry.sql}, ?)`,
         [id, target.type, target.slug, jobTitle, firstName, lastName, email, target.phone, target.motivation,
-          target.city, target.nationality, target.desiredPosition, tokenHash(token), submissionKey],
+          target.city, target.nationality, target.desiredPosition, tokenHash(token), ...expiry.args, submissionKey],
       );
       for (const document of documents) {
         if (!document) continue;
@@ -182,7 +204,7 @@ async function tokenFromRequest(request: Request, key: Buffer) {
   return readToken(payload?.token, key);
 }
 
-export async function processConfirmation(request: Request, operation: "validate" | "resend") {
+export async function processConfirmation(request: Request, operation: "validate" | "resend", loadSettings?: LoadSettings) {
   verifyOrigin(request);
   const config = getApplicationConfig();
   const key = config.key;
@@ -191,7 +213,9 @@ export async function processConfirmation(request: Request, operation: "validate
   await limit(pool, key, `${operation}-ip`, ip, 20, 600);
   const token = await tokenFromRequest(request, key);
   await limit(pool, key, `${operation}-token`, token, 4, 1800);
-  const mailer = getMailer();
+  const settings = await loadSettings?.();
+  const mailer = getMailer(settings);
+  const expiry = expiration(settings);
   const notifications = await transaction(pool, async (connection) => {
     const [rows] = await connection.execute<ApplicationRow[]>(
       `SELECT id, token_expires_at <= UTC_TIMESTAMP() AS expired FROM recrutement_candidatures
@@ -203,9 +227,9 @@ export async function processConfirmation(request: Request, operation: "validate
       if (!application.expired) throw new ApplicationError(409, "Le lien actuel est encore valide.", "active");
       const replacement = createToken(key);
       await connection.execute(
-        `UPDATE recrutement_candidatures SET token_hash = ?, token_expires_at = DATE_ADD(UTC_TIMESTAMP(), INTERVAL 48 HOUR)
+        `UPDATE recrutement_candidatures SET token_hash = ?, token_expires_at = ${expiry.sql}
          WHERE id = ?`,
-        [tokenHash(replacement), application.id],
+        [tokenHash(replacement), ...expiry.args, application.id],
       );
       return [await queueEmail(connection, application.id, "verification", { token: replacement, key })];
     }
@@ -231,7 +255,7 @@ export async function processConfirmation(request: Request, operation: "validate
   return reply("Votre adresse e-mail a été validée. La notification au recruteur est en attente.", 202);
 }
 
-export async function retryNotifications(request: Request) {
+export async function retryNotifications(request: Request, loadSettings?: LoadSettings) {
   const secret = process.env.RECRUTEMENT_OUTBOX_SECRET;
   const provided = Buffer.from(request.headers.get("authorization") ?? "");
   const expected = Buffer.from(`Bearer ${secret ?? ""}`);
@@ -239,7 +263,7 @@ export async function retryNotifications(request: Request) {
     throw new ApplicationError(404, "Ressource indisponible.");
   }
   const config = getApplicationConfig();
-  const mailer = getMailer();
+  const mailer = getMailer(await loadSettings?.());
   const pool = (await import("@/lib/db")).default;
   await pool.execute("DELETE FROM recrutement_rate_limits WHERE expires_at <= UTC_TIMESTAMP() LIMIT 1000");
   const [rows] = await pool.execute<(RowDataPacket & { id: string })[]>(

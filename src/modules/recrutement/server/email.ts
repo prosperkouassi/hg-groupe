@@ -1,8 +1,9 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 
 import type { Pool, PoolConnection, RowDataPacket, ResultSetHeader } from "mysql2/promise";
 import nodemailer from "nodemailer";
 
+import { resolveRecipients, type RecruitmentSettings } from "../admin/settings";
 import { sealQueuedToken, tokenHash, unsealQueuedToken } from "./security";
 
 type EmailKind = "verification" | "recruiter" | "candidate";
@@ -21,9 +22,11 @@ type QueuedEmail = RowDataPacket & {
   created_at_iso: string;
 };
 
-export function getMailer() {
+export function getMailer(settings?: RecruitmentSettings) {
   const { SMTP_HOST: host, SMTP_PORT: port, SMTP_USER: user, SMTP_PASSWORD: pass, SMTP_SECURE: secure,
-    RECRUTEMENT_EMAIL_FROM: from, RECRUTEMENT_EMAIL_ADMIN: admin } = process.env;
+    RECRUTEMENT_EMAIL_FROM: legacyFrom, RECRUTEMENT_EMAIL_ADMIN: administrator } = process.env;
+  const from = settings?.sender || legacyFrom;
+  const admin = administrator?.trim();
   const numericPort = Number(port);
   if (!host || !Number.isInteger(numericPort) || numericPort < 1 || numericPort > 65535 || !user || !pass || !from || !admin) {
     throw new Error("Recruitment email configuration is incomplete");
@@ -34,7 +37,7 @@ export function getMailer() {
       connectionTimeout: 8000, greetingTimeout: 8000, socketTimeout: 8000,
       disableFileAccess: true, disableUrlAccess: true,
     }),
-    from, admin,
+    from, admin, settings,
   };
 }
 
@@ -53,39 +56,40 @@ export async function queueEmail(
   return id;
 }
 
-function messageFor(email: QueuedEmail, origin: string, admin: string, candidateToken: string | null) {
+function messageFor(email: QueuedEmail, origin: string, admin: string, candidateToken: string | null,
+  settings?: RecruitmentSettings) {
   const spontaneous = email.application_type === "spontaneous_application";
   const job = spontaneous ? "Candidature spontanée" : (email.job_title ?? "Offre d’emploi");
   const application = spontaneous ? "Votre candidature spontanée" : `Votre candidature au poste « ${job} »`;
   const desiredPosition = spontaneous && email.desired_position ? `Poste souhaité : ${email.desired_position}` : "";
-  const signature = process.env.RECRUTEMENT_EMAIL_SIGNATURE ?? "L’équipe recrutement Hopla Groupe";
+  const signature = settings?.signature ?? process.env.RECRUTEMENT_EMAIL_SIGNATURE ?? "L’équipe recrutement Hopla Groupe";
   if (email.kind === "verification" && candidateToken) {
     const url = new URL("/recrutement/confirmation", origin);
     url.hash = new URLSearchParams({ token: candidateToken }).toString();
     return {
       to: { name: "", address: email.email },
-      subject: process.env.RECRUTEMENT_EMAIL_VERIFICATION_SUBJECT ?? "Confirmez votre candidature — Hopla",
+      subject: settings?.verificationSubject ?? process.env.RECRUTEMENT_EMAIL_VERIFICATION_SUBJECT ?? "Confirmez votre candidature — Hopla",
       text: [
         `${application}.`,
-        process.env.RECRUTEMENT_EMAIL_VERIFICATION_BODY ?? "Votre candidature ne sera transmise au recruteur qu’après validation.",
-        `Valider mon e-mail (lien valide pendant 48 heures) : ${url.href}`,
+        settings?.verificationBody ?? process.env.RECRUTEMENT_EMAIL_VERIFICATION_BODY ?? "Votre candidature ne sera transmise au recruteur qu’après validation.",
+        `Valider mon e-mail : ${url.href}`,
         signature,
       ].join("\n\n"),
     };
   }
   if (email.kind === "recruiter") {
-    const adminPath = process.env.RECRUTEMENT_ADMIN_PATH;
-    const url = new URL(adminPath && /^\/admin\/(?:[a-z0-9-]+\/)*[a-z0-9-]+$/i.test(adminPath)
-      ? `${adminPath}/${email.application_id}` : "/admin", origin);
+    const url = new URL(spontaneous ? "/admin/recrutement/spontanees" : "/admin/recrutement/candidatures", origin);
+    url.searchParams.set("id", email.application_id);
     const date = new Intl.DateTimeFormat("fr-FR", {
       dateStyle: "long", timeStyle: "short", timeZone: "Africa/Abidjan",
     }).format(new Date(email.created_at_iso));
     return {
       to: { name: "", address: admin },
-      subject: (process.env.RECRUTEMENT_EMAIL_RECRUITER_SUBJECT ?? "Nouvelle candidature validée — [Poste]").replaceAll("[Poste]", () => job.replace(/[\r\n]/g, " ")),
+      subject: (settings?.recruiterSubject ?? process.env.RECRUTEMENT_EMAIL_RECRUITER_SUBJECT ?? "Nouvelle candidature validée — [Poste]").replaceAll("[Poste]", () => job.replace(/[\r\n]/g, " ")),
       text: [
-        process.env.RECRUTEMENT_EMAIL_RECRUITER_BODY ?? "Une candidature validée est disponible.",
-        [`${email.first_name} ${email.last_name} — ${job}`, desiredPosition, `Candidature reçue le ${date}.`].filter(Boolean).join("\n"),
+        settings?.recruiterBody ?? process.env.RECRUTEMENT_EMAIL_RECRUITER_BODY ?? "Une candidature validée est disponible.",
+        [`${email.first_name} ${email.last_name} — ${job}`, desiredPosition,
+          `Type : ${spontaneous ? "candidature spontanée" : "candidature sur offre"}`, `Candidature reçue le ${date}.`].filter(Boolean).join("\n"),
         `Espace sécurisé : ${url.href}`,
         signature,
       ].join("\n\n"),
@@ -93,16 +97,45 @@ function messageFor(email: QueuedEmail, origin: string, admin: string, candidate
   }
   return {
     to: { name: "", address: email.email },
-    subject: process.env.RECRUTEMENT_EMAIL_CANDIDATE_SUBJECT ?? "Votre candidature a bien été transmise — Hopla",
+    subject: settings?.candidateSubject ?? process.env.RECRUTEMENT_EMAIL_CANDIDATE_SUBJECT ?? "Votre candidature a bien été transmise — Hopla",
     text: [
       `${application} a bien été transmise.`,
       desiredPosition,
-      process.env.RECRUTEMENT_EMAIL_CANDIDATE_BODY ??
+      settings?.candidateBody ?? process.env.RECRUTEMENT_EMAIL_CANDIDATE_BODY ??
         (spontaneous ? "Notre équipe vous contactera si une opportunité correspond à votre profil." :
           "Le délai de réponse dépend de l’offre. Notre équipe vous contactera si votre profil est retenu."),
       signature,
     ].filter(Boolean).join("\n\n"),
   };
+}
+
+async function sendRecruiterNotifications(
+  pool: Pool, mailer: ReturnType<typeof getMailer>, id: string, lease: string,
+  hostname: string, message: ReturnType<typeof messageFor>,
+) {
+  const recipients = mailer.settings ? resolveRecipients(mailer.settings, mailer.admin) : [mailer.admin];
+  const [accepted] = await pool.execute<(RowDataPacket & { digest: string })[]>(
+    "SELECT LOWER(HEX(recipient_hash)) AS digest FROM recruitment_admin_mail_receipts WHERE outbox_id = ?",
+    [id],
+  );
+  const sent = new Set(accepted.map(({ digest }) => digest));
+  for (const address of recipients) {
+    const digest = createHash("sha256").update(address.toLowerCase()).digest("hex");
+    if (sent.has(digest)) continue;
+    const result = await mailer.transporter.sendMail({
+      ...message,
+      to: { name: "", address },
+      from: { name: "Hopla Groupe", address: mailer.from },
+      messageId: `<recrutement-${id}-${digest.slice(0, 16)}@${hostname}>`,
+    });
+    if (result.accepted.length !== 1) throw new Error("Recruitment email was not accepted");
+    const [receipt] = await pool.execute<ResultSetHeader>(
+      `INSERT INTO recruitment_admin_mail_receipts (outbox_id, recipient_hash, accepted_at)
+       SELECT id, UNHEX(?), UTC_TIMESTAMP() FROM recrutement_emails WHERE id = ? AND lease = ?`,
+      [digest, id, lease],
+    );
+    if (receipt.affectedRows !== 1) throw new Error("Recruitment delivery lease expired");
+  }
 }
 
 export async function deliverEmail(
@@ -141,12 +174,18 @@ export async function deliverEmail(
   try {
     const token = email.token ? unsealQueuedToken(config.key, email.token) : null;
     if (email.kind === "verification" && !token) throw new Error("Verification token unavailable");
-    const result = await mailer.transporter.sendMail({
-      from: { name: "Hopla Groupe", address: mailer.from },
-      messageId: `<recrutement-${id}@${new URL(config.origin).hostname}>`,
-      ...messageFor(email, config.origin, mailer.admin, token),
-    });
-    if (result.accepted.length !== 1) throw new Error("Recruitment email was not accepted");
+    const hostname = new URL(config.origin).hostname;
+    const message = messageFor(email, config.origin, mailer.admin, token, mailer.settings);
+    if (email.kind === "recruiter" && mailer.settings) {
+      await sendRecruiterNotifications(pool, mailer, id, lease, hostname, message);
+    } else {
+      const result = await mailer.transporter.sendMail({
+        from: { name: "Hopla Groupe", address: mailer.from },
+        messageId: `<recrutement-${id}@${hostname}>`,
+        ...message,
+      });
+      if (result.accepted.length !== 1) throw new Error("Recruitment email was not accepted");
+    }
   } catch {
     const delay = Math.min(6 * 3600, 60 * 2 ** Math.min(email.attempts, 9));
     await pool.execute(

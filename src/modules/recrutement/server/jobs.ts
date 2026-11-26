@@ -1,9 +1,11 @@
 import type { RowDataPacket } from "mysql2";
+import { isPublicOfferAsset } from "../public-assets";
 import type { Job, JobsPage, Recruiter } from "../types";
 
 const pageSize = 15;
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const published = "published_at IS NOT NULL AND published_at <= UTC_TIMESTAMP() AND slug <> 'confirmation'";
+const mediaColumns = ", featured, image_url AS imageUrl, attachments";
 
 const columns = `
   slug, title, city, country, country_code AS countryCode, company, contract,
@@ -16,21 +18,26 @@ const columns = `
 
 type Section = "missions" | "profile" | "skills" | "benefits" | "process";
 
-interface JobRow extends RowDataPacket, Omit<Job, "closed" | "demo" | "coverLetterRequired" | "recruiter" | Section>, Record<Section, unknown> {
+interface JobRow extends RowDataPacket, Omit<Job, "closed" | "demo" | "coverLetterRequired" | "recruiter" | "featured" | "imageUrl" | "attachments" | Section>, Record<Section, unknown> {
   closed: number;
   coverLetterRequired: number;
   recruiter: unknown;
+  featured?: number;
+  imageUrl?: unknown;
+  attachments?: unknown;
 }
 
-function publicRecruiter(value: unknown): Recruiter | null {
+export function publicRecruiter(value: unknown): Recruiter | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const fields = value as Record<string, unknown>;
   const visibleText = (key: string) => typeof fields[key] === "string" ? fields[key] : null;
   const name = visibleText("name");
   if (!name) return null;
+  const initials = visibleText("initials");
 
   return {
     name,
+    ...(initials && /^\p{L}{2,4}$/u.test(initials) ? { initials } : {}),
     role: visibleText("role") ?? "",
     company: visibleText("company") ?? "",
     email: visibleText("email"),
@@ -44,6 +51,19 @@ function publicSection(value: unknown) {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 }
 
+function publicAttachments(value: unknown) {
+  // mysql2 returns JSON columns as objects on MySQL and as text on some MariaDB configurations.
+  let entries = value;
+  if (typeof entries === "string") {
+    try {
+      entries = JSON.parse(entries);
+    } catch {
+      return [];
+    }
+  }
+  return Array.isArray(entries) ? [...new Set(entries.filter(path => isPublicOfferAsset(path, false)))].slice(0, 10) : [];
+}
+
 function fromRow(row: JobRow): Job {
   return {
     ...row,
@@ -55,8 +75,22 @@ function fromRow(row: JobRow): Job {
     process: publicSection(row.process),
     closed: Boolean(row.closed),
     coverLetterRequired: Boolean(row.coverLetterRequired),
+    featured: Boolean(row.featured),
+    imageUrl: isPublicOfferAsset(row.imageUrl, true) ? row.imageUrl : null,
+    attachments: publicAttachments(row.attachments),
     demo: false,
   };
+}
+
+async function withPublicMedia<T>(query: (withMedia: boolean) => Promise<T>) {
+  try {
+    return await query(true);
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "ER_BAD_FIELD_ERROR") {
+      return query(false);
+    }
+    throw error;
+  }
 }
 
 export function parsePage(input: unknown) {
@@ -97,10 +131,12 @@ export async function getJobs(requestedPage: number): Promise<JobsPage> {
     );
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
     const page = Math.min(requestedPage, totalPages);
-    const [rows] = await pool.execute<JobRow[]>(
-      `SELECT ${columns} FROM recruitment_jobs WHERE ${published}
-       ORDER BY published_at DESC, slug ASC LIMIT ? OFFSET ?`,
-      [pageSize, (page - 1) * pageSize],
+    const [rows] = await withPublicMedia(withMedia =>
+      pool.execute<JobRow[]>(
+        `SELECT ${columns}${withMedia ? mediaColumns : ""} FROM recruitment_jobs WHERE ${published}
+         ORDER BY ${withMedia ? "featured DESC, " : ""}published_at DESC, slug ASC LIMIT ? OFFSET ?`,
+        [pageSize, (page - 1) * pageSize],
+      ),
     );
     return { jobs: rows.map(fromRow), page, totalPages, total, unavailable: false };
   } catch {
@@ -120,9 +156,11 @@ export async function getJob(slug: string): Promise<Job | null> {
   if (process.env.RECRUTEMENT_OFFRES_ENABLED !== "true") return null;
 
   const { default: pool } = await import("@/lib/db");
-  const [rows] = await pool.execute<JobRow[]>(
-    `SELECT ${columns} FROM recruitment_jobs WHERE slug = ? AND ${published}`,
-    [slug],
+  const [rows] = await withPublicMedia(withMedia =>
+    pool.execute<JobRow[]>(
+      `SELECT ${columns}${withMedia ? mediaColumns : ""} FROM recruitment_jobs WHERE slug = ? AND ${published}`,
+      [slug],
+    ),
   );
   return rows[0] ? fromRow(rows[0]) : null;
 }
@@ -135,10 +173,15 @@ export async function getJobPage(job: Job) {
 
   const { default: pool } = await import("@/lib/db");
   const publication = job.publishedAt.slice(0, 19).replace("T", " ");
-  const [[{ total }]] = await pool.execute<(RowDataPacket & { total: number })[]>(
-    `SELECT COUNT(*) AS total FROM recruitment_jobs WHERE ${published}
-     AND (published_at > ? OR (published_at = ? AND slug < ?))`,
-    [publication, publication, job.slug],
-  );
+  const newer = "(published_at > ? OR (published_at = ? AND slug < ?))";
+  const dateParams = [publication, publication, job.slug];
+  const [[{ total }]] = await withPublicMedia(withMedia => {
+    const order = withMedia ? `(featured > ? OR (featured = ? AND ${newer}))` : newer;
+    const featured = Number(Boolean(job.featured));
+    return pool.execute<(RowDataPacket & { total: number })[]>(
+      `SELECT COUNT(*) AS total FROM recruitment_jobs WHERE ${published} AND ${order}`,
+      withMedia ? [featured, featured, ...dateParams] : dateParams,
+    );
+  });
   return Math.floor(total / pageSize) + 1;
 }

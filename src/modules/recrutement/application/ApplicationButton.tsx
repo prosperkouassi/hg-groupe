@@ -4,25 +4,30 @@ import Link from "next/link";
 import { useId, useRef, useState, type FormEvent } from "react";
 
 import { normalizeInternationalPhone, type NationalityOption } from "./fields";
-import DocumentField, { maxDocumentSize } from "./DocumentField";
+import DocumentField, { acceptsDocument, defaultDocumentFormats } from "./DocumentField";
 import NationalityField from "./NationalityField";
 import PhoneField from "./PhoneField";
 import styles from "./application.module.css";
 
+export type ApplicationPolicy = { consentText: string; allowedFormats: readonly string[]; maxFileMiB: number };
+
 type Props = {
   className?: string;
   demo?: boolean;
+  unavailable?: boolean;
+  policy?: ApplicationPolicy;
 } & (
   | { applicationType?: "job_application"; slug: string; title: string; coverLetterRequired: boolean }
-  | { applicationType: "spontaneous_application"; nationalities: NationalityOption[]; unavailable?: boolean }
+  | { applicationType: "spontaneous_application"; nationalities: NationalityOption[] }
 );
 
 const unavailableMessage = "L’envoi de votre candidature est indisponible pour le moment.";
 
 export default function ApplicationButton(props: Props) {
-  const { className, demo = false } = props;
+  const { className, demo = false, unavailable, policy } = props;
   const spontaneous = props.applicationType === "spontaneous_application";
-  const unavailable = spontaneous && props.unavailable;
+  const formats = policy?.allowedFormats ?? defaultDocumentFormats;
+  const maxMiB = policy?.maxFileMiB ?? 5;
   const coverLetterRequired = !spontaneous && props.coverLetterRequired;
   const title = spontaneous ? "Candidature spontanée" : `Candidature — ${props.title}`;
   const id = useId();
@@ -75,9 +80,8 @@ export default function ApplicationButton(props: Props) {
     for (const [name, label] of [["cv", "Le CV"], ["coverLetter", "La lettre de motivation"]]) {
       const file = data.get(name);
       if (!(file instanceof File) || !file.size) continue;
-      const invalidFormat = !/\.(pdf|docx?)$/i.test(file.name);
-      if (invalidFormat || file.size > maxDocumentSize) {
-        setError(`${label} doit être au format PDF, DOC ou DOCX et ne pas dépasser 5 Mo.`);
+      if (!acceptsDocument(file, formats, maxMiB)) {
+        setError(`${label} doit respecter les formats indiqués et ne pas dépasser ${maxMiB} Mo.`);
         form.querySelector<HTMLInputElement>(`input[name="${name}"]`)?.focus();
         return;
       }
@@ -141,7 +145,9 @@ export default function ApplicationButton(props: Props) {
             {demo && <p className={styles.notice}>{spontaneous
               ? "Vous consultez le formulaire de démonstration. L’envoi est désactivé."
               : "Cette offre de démonstration permet de consulter le formulaire. L’envoi est désactivé."}</p>}
-            {!demo && unavailable && <p className={styles.notice}>L’envoi des candidatures spontanées est temporairement indisponible.</p>}
+            {!demo && unavailable && <p className={styles.notice}>{spontaneous
+              ? "L’envoi des candidatures spontanées est temporairement indisponible."
+              : unavailableMessage}</p>}
             <p className={styles.hint}>Les champs marqués d’un astérisque sont obligatoires.</p>
             <div className={styles.grid}>
               <label>Nom <span aria-hidden="true">*</span><input name="lastName" autoComplete="family-name" maxLength={100} required /></label>
@@ -157,8 +163,8 @@ export default function ApplicationButton(props: Props) {
             </div>
             {spontaneous && <NationalityField nationalities={props.nationalities} />}
             <div className={styles.grid}>
-              <DocumentField name="cv" label="CV" required />
-              <DocumentField name="coverLetter" label="Lettre de motivation" required={coverLetterRequired} />
+              <DocumentField name="cv" label="CV" formats={formats} maxMiB={maxMiB} required />
+              <DocumentField name="coverLetter" label="Lettre de motivation" formats={formats} maxMiB={maxMiB} required={coverLetterRequired} />
             </div>
             {!spontaneous && <label>Message de motivation<textarea name="motivation" rows={4} maxLength={4000} /></label>}
             <div hidden>
@@ -166,7 +172,7 @@ export default function ApplicationButton(props: Props) {
             </div>
             <label className={styles.consent} htmlFor={`${id}-consent`}>
               <input id={`${id}-consent`} name="consent" type="checkbox" required />
-              <span>J’accepte le traitement de mes données pour l’étude de ma candidature <span aria-hidden="true">*</span></span>
+              <span>{policy?.consentText ?? "J’accepte le traitement de mes données pour l’étude de ma candidature"} <span aria-hidden="true">*</span></span>
             </label>
             <Link className={styles.privacy} href="/politique-confidentialite" target="_blank" rel="noopener noreferrer">
               Politique de confidentialité (nouvel onglet)

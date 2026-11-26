@@ -2,12 +2,19 @@ import { useId, useRef, useState } from "react";
 
 import styles from "./application.module.css";
 
-export const maxDocumentSize = 5 * 1024 * 1024;
+export const defaultDocumentFormats = ["pdf", "doc", "docx"];
 
-export default function DocumentField({ name, label, required }: {
+export function acceptsDocument(file: File, formats: readonly string[], maxMiB: number) {
+  return file.size > 0 && file.size <= maxMiB * 1024 * 1024 &&
+    formats.includes(file.name.split(".").at(-1)?.toLowerCase() ?? "") && file.name.includes(".");
+}
+
+export default function DocumentField({ name, label, required, formats, maxMiB }: {
   name: "cv" | "coverLetter";
   label: string;
   required: boolean;
+  formats: readonly string[];
+  maxMiB: number;
 }) {
   const id = useId();
   const input = useRef<HTMLInputElement>(null);
@@ -19,8 +26,8 @@ export default function DocumentField({ name, label, required }: {
     const file = files?.[0];
     const message = files && files.length > 1
       ? "Déposez un seul document à la fois."
-      : file && (!/\.(pdf|docx?)$/i.test(file.name) || file.size > maxDocumentSize || !file.size)
-        ? "Sélectionnez un fichier PDF, DOC ou DOCX non vide de 5 Mo maximum."
+      : file && !acceptsDocument(file, formats, maxMiB)
+        ? `Sélectionnez un fichier ${formats.join(", ").toUpperCase()} non vide de ${maxMiB} Mo maximum.`
         : "";
     input.current?.setCustomValidity(message);
     setFileName(file?.name ?? "");
@@ -61,7 +68,7 @@ export default function DocumentField({ name, label, required }: {
           className={styles.fileInput}
           name={name}
           type="file"
-          accept=".pdf,.doc,.docx"
+          accept={formats.map(format => `.${format}`).join(",")}
           required={required}
           aria-describedby={`${id}-help${error ? ` ${id}-error` : ""}`}
           aria-invalid={error ? true : undefined}
@@ -72,7 +79,7 @@ export default function DocumentField({ name, label, required }: {
         </svg>
         <span className={styles.fileCopy}>
           <strong>{fileName || "Choisir ou déposer un fichier"}</strong>
-          <span id={`${id}-help`} className={styles.hint}>PDF, DOC ou DOCX · 5&nbsp;Mo max.</span>
+          <span id={`${id}-help`} className={styles.hint}>{new Intl.ListFormat("fr", { type: "disjunction" }).format(formats.map(format => format.toUpperCase()))} · {maxMiB}&nbsp;Mo max.</span>
           {fileName && <span className={styles.fileReplace}>Remplacer le fichier</span>}
         </span>
       </div>

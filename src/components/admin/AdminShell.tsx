@@ -56,6 +56,15 @@ export default function AdminShell({
     { label: "Blog", href: "/admin/blog", icon: <span aria-hidden="true" className="text-xl">✎</span> },
     { label: "Partenaires", href: "/admin/partenaires", icon: <span aria-hidden="true" className="text-xl">◇</span> },
     {
+      label: "Recrutement",
+      href: "/admin/recrutement",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="h-5 w-5">
+          <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M4 12h16m-7 0v2h-2v-2m-7-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
+    },
+    {
       label: "Projets",
       href: "/admin/projets",
 

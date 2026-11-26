@@ -3,6 +3,7 @@ export type WorkMode = "Sur site" | "Hybride" | "Télétravail";
 
 export type Recruiter = {
   name: string;
+  initials?: string;
   role: string;
   company: string;
   email: string | null;
@@ -38,6 +39,9 @@ export type Job = {
   benefits: string[];
   process: string[];
   recruiter: Recruiter | null;
+  featured?: boolean;
+  imageUrl?: string | null;
+  attachments?: string[];
 };
 
 export type JobsPage = {
