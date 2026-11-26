@@ -1,5 +1,7 @@
 # Préparation de la recette technique Recrutement
 
+La recette fonctionnelle en production a été validée par le responsable de Hopla Groupe. Le [rapport de livraison](RECRUTEMENT_RAPPORT_LIVRAISON.md) consigne cette validation. Le [guide d’exploitation](RECRUTEMENT_EXPLOITATION.md) décrit la configuration et les procédures courantes. Les comptes rendus d’audit de cette page décrivent les vérifications effectuées à leur date.
+
 Audit statique réalisé sur `feat/nouvelle-fonctionnalite`, base `2c5e828`. Les scripts ont été lus dans l’arbre de travail. La version et les données du serveur cible restent à vérifier lors de la recette autorisée.
 
 ## Inventaire et ordre d’application
